@@ -127,3 +127,6 @@ Here is a list of things that should be done to make this plugin awesome:
 
 If you encounter issues or think about any kind of enhancements, you can add them in the [adequate section of the project](https://github.com/linsolas/casperjs-runner-maven-plugin/issues). Do not hesitate also to make Push Requests if you want to enhance this project.
 
+## License
+
+This plugin is licensed with [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)

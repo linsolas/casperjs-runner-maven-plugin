@@ -17,6 +17,7 @@ import java.io.IOException;
 
 
 /**
+ * Runs JavaScript and/or CoffeScript test files on CasperJS instance
  * User: Romain Linsolas
  * Date: 09/04/13
  */
@@ -100,7 +101,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         log.info("Tests run: " + (failures + success) + ", Success: " + success + " Failures: " + failures +
                 ". Time elapsed: " + (System.currentTimeMillis() - started) + "ms.");
-        if (!ignoreTestFailures && (failures > 0)) {
+        if (!ignoreTestFailures && failures > 0) {
             throw new MojoFailureException("There are " + failures + " tests failures");
         }
     }

@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>only-cs</artifactId>
+  <artifactId>test-directory</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: only coffee scripts</name>
+  <name>CasperJS Runner :: specific test directory</name>
 
   <url>no-url</url>
 
@@ -44,7 +44,7 @@
           </execution>
         </executions>
         <configuration>
-          <includeJS>false</includeJS>
+          <testsDir>${basedir}/src/test/javascript</testsDir>
         </configuration>
       </plugin>
     </plugins>

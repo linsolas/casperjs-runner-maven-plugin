@@ -44,7 +44,6 @@
           </execution>
         </executions>
         <configuration>
-          <testsDir>${basedir}/src/test/js</testsDir>
           <ignoreTestFailures>true</ignoreTestFailures>
         </configuration>
       </plugin>

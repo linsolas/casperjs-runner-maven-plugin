@@ -29,7 +29,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(alias = "casperjs.executable", defaultValue = "casperjs")
     private String casperExec;
 
-    @Parameter(alias = "tests.directory")
+    @Parameter(alias = "tests.directory", defaultValue = "${basedir}/src/test/js")
     private File testsDir;
 
     @Parameter(alias = "ignoreTestFailures")

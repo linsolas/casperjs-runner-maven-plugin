@@ -7,7 +7,7 @@
     <artifactId>casperjs-runner-maven-plugin</artifactId>
     <version>1.0-RC1</version>
     <name>CasperJS runner Maven plugin</name>
-    <description>Runs JS and CS test files on CasperJS instance</description>
+    <description>Runs JavaScript and/or CoffeScript test files on CasperJS instance</description>
     <packaging>maven-plugin</packaging>
 
     <properties>
@@ -67,6 +67,7 @@
                 <artifactId>maven-plugin-plugin</artifactId>
                 <version>3.2</version>
                 <configuration>
+                    <goalPrefix>casperjs-runner</goalPrefix>
                     <!-- see http://jira.codehaus.org/browse/MNG-5346 -->
                     <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
                 </configuration>
@@ -76,6 +77,35 @@
                         <goals>
                             <goal>descriptor</goal>
                         </goals>
+                    </execution>
+                    <execution>
+                        <id>mojo-help</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-invoker-plugin</artifactId>
+                <version>1.8</version>
+                <configuration>
+                    <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                    <settingsFile>src/it/settings.xml</settingsFile>
+                    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>install</goal>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <pomIncludes>
+                                <pomInclude>casperjs-runner/*/pom.xml</pomInclude>
+                            </pomIncludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

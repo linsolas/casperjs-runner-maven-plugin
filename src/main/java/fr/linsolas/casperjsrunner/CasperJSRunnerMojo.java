@@ -17,10 +17,11 @@ import java.io.IOException;
 
 
 /**
+ * Runs JavaScript and/or CoffeScript test files on CasperJS instance
  * User: Romain Linsolas
  * Date: 09/04/13
  */
-@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST)
+@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe=true)
 public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Parameters for the plugin
@@ -28,7 +29,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(alias = "casperjs.executable", defaultValue = "casperjs")
     private String casperExec;
 
-    @Parameter(alias = "tests.directory")
+    @Parameter(alias = "tests.directory", defaultValue = "${basedir}/src/test/js")
     private File testsDir;
 
     @Parameter(alias = "ignoreTestFailures")
@@ -66,9 +67,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(alias = "failFast")
     private boolean failFast = false;
 
-    private int failures = 0;
-    private int success = 0;
-
     private Log log = getLog();
 
     private void init() throws MojoFailureException {
@@ -86,26 +84,26 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         init();
-        long started = System.currentTimeMillis();
+        Result globalResult = new Result();
         log.info("Looking for scripts in " + testsDir + "...");
         if (includeJS) {
-            executeScripts(".js");
+            globalResult.add(executeScripts(".js"));
         } else {
             log.info("JavaScript files ignored");
         }
         if (includeCS) {
-            executeScripts(".coffee");
+            globalResult.add(executeScripts(".coffee"));
         } else {
             log.info("CoffeeScript files ignored");
         }
-        log.info("Tests run: " + (failures + success) + ", Success: " + success + " Failures: " + failures +
-                ". Time elapsed: " + (System.currentTimeMillis() - started) + "ms.");
-        if (!ignoreTestFailures && (failures > 0)) {
-            throw new MojoFailureException("There are " + failures + " tests failures");
+        log.info(globalResult.print());
+        if (!ignoreTestFailures && globalResult.getFailures() > 0) {
+            throw new MojoFailureException("There are " + globalResult.getFailures() + " tests failures");
         }
     }
 
-    private void executeScripts(final String ext) {
+    private Result executeScripts(final String ext) {
+        Result result = new Result();
         File[] files = testsDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -119,13 +117,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
                 log.debug("Execution of test " + f.getName());
                 int res = executeScript(f);
                 if (res == 0) {
-                    success++;
+                    result.addSuccess();
                 } else {
                     log.warn("Test '" + f.getName() + "' has failure");
-                    failures++;
+                    result.addFailure();
                 }
             }
         }
+        return result;
     }
 
     private int executeScript(File f) {

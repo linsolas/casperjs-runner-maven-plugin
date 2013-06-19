@@ -1,10 +1,12 @@
 package fr.linsolas.casperjsrunner;
 
+import java.util.concurrent.TimeUnit;
+
 public class Result {
 
     private int failures = 0;
     private int success = 0;
-    private long started = System.currentTimeMillis();
+    private long started = System.nanoTime();
 
     public void add(Result other) {
         failures += other.getFailures();
@@ -22,7 +24,7 @@ public class Result {
     public String print() {
         return "Tests run: " + (failures + success) + ", Success: " + success
                 + " Failures: " + failures + ". Time elapsed: "
-                + (System.currentTimeMillis() - started) + "ms.";
+                + TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - started) + "ms.";
     }
 
     public int getFailures() {

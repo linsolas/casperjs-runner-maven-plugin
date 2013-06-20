@@ -14,6 +14,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 
 
 /**
@@ -66,6 +67,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter(alias = "failFast")
     private boolean failFast = false;
+
+    @Parameter
+    private List<String> arguments;
 
     private Log log = getLog();
 
@@ -155,6 +159,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             command.append(" --direct");
         }
         command.append(' ').append(f.getAbsolutePath());
+        if (arguments != null && !arguments.isEmpty()) {
+            for (String argument:arguments) {
+                command.append(' ').append(argument);
+            }
+        }
         return executeCommand(command.toString());
     }
 

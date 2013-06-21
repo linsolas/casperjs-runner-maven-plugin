@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>fr.linsolas</groupId>
+  <artifactId>parameters</artifactId>
+  <version>1.0</version>
+
+  <name>CasperJS Runner :: parameters</name>
+
+  <url>no-url</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <verbose>true</verbose>
+  </properties>
+
+  <build>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>fr.linsolas</groupId>
+          <artifactId>casperjs-runner-maven-plugin</artifactId>
+          <version>@pom.version@</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>fr.linsolas</groupId>
+        <artifactId>casperjs-runner-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <arguments>
+                <argument>Hello</argument>
+                <argument>World</argument>
+              </arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>

@@ -134,6 +134,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private int executeScript(File f) {
         StringBuffer command = new StringBuffer();
         command.append(casperExec);
+        command.append(" test");
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
             command.append(" --includes=").append(includes);

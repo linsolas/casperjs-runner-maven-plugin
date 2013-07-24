@@ -67,6 +67,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter(alias = "failFast")
     private boolean failFast = false;
+    
+	@Parameter(alias = "engine")
+	private String engine;
 
     @Parameter
     private List<String> arguments;
@@ -159,6 +162,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         if (direct) {
             command.append(" --direct");
         }
+		// Option --engine, to select phantomJS or slimerJS engine
+		if (StringUtils.isNotBlank(engine)) {
+			command.append(" --engine=").append(engine);
+		}
         command.append(' ').append(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {
             for (String argument:arguments) {

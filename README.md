@@ -113,7 +113,7 @@ You can also add in the ```<configuration>``` part several elements that will be
         <td>Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.</td>
     </tr>
     <tr>
-    	<td>engine</td>
+    	<td><code>engine</code></td>
     	<td>CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine (phantomjs or slimerjs)</td>
     </tr>
 </table>

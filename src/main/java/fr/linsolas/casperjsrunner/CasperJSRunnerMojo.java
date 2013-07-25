@@ -20,7 +20,6 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
  * User: Romain Linsolas
@@ -77,8 +76,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter
     private List<String> arguments;
-    
-	private DefaultArtifactVersion casperJsVersion;
+
+    private DefaultArtifactVersion casperJsVersion;
 
     private Log log = getLog();
 
@@ -142,7 +141,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private int executeScript(File f) {
         StringBuffer command = new StringBuffer();
         command.append(casperExec);
-        command.append(" test");
+        if(casperJsVersion.compareTo(new DefaultArtifactVersion("1.1"))>=0) {
+            command.append(" test");
+        }
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
             command.append(" --includes=").append(includes);
@@ -179,7 +180,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         return executeCommand(command.toString());
     }
-    
+
     private String checkVersion(String casperExecutable) throws MojoFailureException {
         log.debug("Check CasperJS version");
         InputStream stream = null;
@@ -218,6 +219,4 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-
 }
-

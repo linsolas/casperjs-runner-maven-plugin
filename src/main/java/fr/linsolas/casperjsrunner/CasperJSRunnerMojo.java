@@ -71,9 +71,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter(alias = "failFast")
     private boolean failFast = false;
-    
-	@Parameter(alias = "engine")
-	private String engine;
+
+    @Parameter(alias = "engine")
+    private String engine;
 
     @Parameter
     private List<String> arguments;
@@ -87,10 +87,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             throw new MojoFailureException("CasperJS executable is not defined");
         }
         // Test CasperJS
-		casperJsVersion = new DefaultArtifactVersion(checkVersion(casperExec));
-		if (verbose) {
-			log.info("CasperJS version: " + casperJsVersion);
-		}
+        casperJsVersion = new DefaultArtifactVersion(checkVersion(casperExec));
+        if (verbose) {
+            log.info("CasperJS version: " + casperJsVersion);
+        }
     }
 
     @Override
@@ -180,29 +180,29 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         return executeCommand(command.toString());
     }
     
-	private String checkVersion(String casperExecutable) throws MojoFailureException {
-		log.debug("Check CasperJS version");
-		InputStream stream = null;
-		try {
-			Process child = Runtime.getRuntime().exec(casperExecutable + " --version");
-			stream = child.getInputStream();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-			String version = reader.readLine();
-			return version;
-		} catch (IOException e) {
-			if (verbose) {
-				log.error("Could not run CasperJS command", e);
-			}
-			throw new MojoFailureException("Unable to determine casperJS version");
-		} finally {
-			if (stream != null) {
-				try {
-					stream.close();
-				} catch (IOException e) {
-				}
-			}
-		}
-	}
+    private String checkVersion(String casperExecutable) throws MojoFailureException {
+        log.debug("Check CasperJS version");
+        InputStream stream = null;
+        try {
+            Process child = Runtime.getRuntime().exec(casperExecutable + " --version");
+            stream = child.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String version = reader.readLine();
+            return version;
+        } catch (IOException e) {
+            if (verbose) {
+                log.error("Could not run CasperJS command", e);
+            }
+            throw new MojoFailureException("Unable to determine casperJS version");
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+    }
 
     private int executeCommand(String command) {
         log.debug("Execute CasperJS command [" + command + "]");

@@ -6,6 +6,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
@@ -25,7 +27,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * User: Romain Linsolas
  * Date: 09/04/13
  */
-@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe=true)
+@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe = true)
 public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Parameters for the plugin
@@ -139,46 +141,46 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     }
 
     private int executeScript(File f) {
-        StringBuffer command = new StringBuffer();
-        command.append(casperExec);
-        if(casperJsVersion.compareTo(new DefaultArtifactVersion("1.1"))>=0) {
-            command.append(" test");
+        CommandLine cmdLine = new CommandLine(casperExec);
+        if (casperJsVersion.compareTo(new DefaultArtifactVersion("1.1")) >= 0) {
+            cmdLine.addArgument("test");
         }
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
-            command.append(" --includes=").append(includes);
+            cmdLine.addArgument(" --includes="+includes);
         }
         // Option --pre, to execute the scripts before the test suite
         if (StringUtils.isNotBlank(pre)) {
-            command.append(" --pre=").append(pre);
+            cmdLine.addArgument(" --pre="+pre);
         }
         // Option --pre, to execute the scripts after the test suite
         if (StringUtils.isNotBlank(post)) {
-            command.append(" --post=").append(post);
+            cmdLine.addArgument(" --post="+post);
         }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xUnit)) {
-            command.append(" --xunit=").append(xUnit);
+            cmdLine.addArgument(" --xunit="+xUnit);
         }
-        // Option --fast-fast, to terminate the test suite once a failure is found
+        // Option --fast-fast, to terminate the test suite once a failure is
+        // found
         if (failFast) {
-            command.append(" --fail-fast");
+            cmdLine.addArgument(" --fail-fast");
         }
         // Option --direct, to output log messages to the console
         if (direct) {
-            command.append(" --direct");
+            cmdLine.addArgument(" --direct");
         }
-		// Option --engine, to select phantomJS or slimerJS engine
-		if (StringUtils.isNotBlank(engine)) {
-			command.append(" --engine=").append(engine);
-		}
-        command.append(' ').append(f.getAbsolutePath());
+        // Option --engine, to select phantomJS or slimerJS engine
+        if (StringUtils.isNotBlank(engine)) {
+            cmdLine.addArgument(" --engine="+engine);
+        }
+        cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {
-            for (String argument:arguments) {
-                command.append(' ').append(argument);
+            for (String argument : arguments) {
+                cmdLine.addArgument(argument, false);
             }
         }
-        return executeCommand(command.toString());
+        return executeCommand(cmdLine);
     }
 
     private String checkVersion(String casperExecutable) throws MojoFailureException {
@@ -190,7 +192,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             String version = reader.readLine();
             return version;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             if (verbose) {
                 log.error("Could not run CasperJS command", e);
             }
@@ -199,19 +201,17 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             if (stream != null) {
                 try {
                     stream.close();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                 }
             }
         }
     }
 
-    private int executeCommand(String command) {
-        log.debug("Execute CasperJS command [" + command + "]");
-        DefaultExecutor exec = new DefaultExecutor();
-        CommandLine line = CommandLine.parse(command);
+    private int executeCommand(CommandLine line) {
+        log.debug("Execute CasperJS command [" + line + "]");
         try {
-            return exec.execute(line);
-        } catch (IOException e) {
+            return new DefaultExecutor().execute(line);
+        } catch (final IOException e) {
             if (verbose) {
                 log.error("Could not run CasperJS command", e);
             }

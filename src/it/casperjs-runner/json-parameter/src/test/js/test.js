@@ -1,0 +1,14 @@
+var casper = require('casper').create();
+
+var conf = {};
+
+casper.echo("Raw conf is: " + casper.cli.get("conf"));
+try {
+	conf = JSON.parse(casper.cli.get("conf"));
+} catch(err) {
+	casper.echo("Unable to decode Json from 'conf' parameter : "+err+". Default configuration will be loaded", "error");
+}
+
+casper.echo('conf.key from test.js is: ' + conf.key);
+
+casper.exit();

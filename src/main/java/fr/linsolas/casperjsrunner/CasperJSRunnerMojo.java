@@ -1,13 +1,13 @@
 package fr.linsolas.casperjsrunner;
 
+import static fr.linsolas.casperjsrunner.LogUtils.getLogger;
+import static fr.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
+
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
@@ -17,7 +17,6 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -32,48 +31,54 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Parameters for the plugin
 
-    @Parameter(alias = "casperjs.executable", defaultValue = "casperjs")
+    @Parameter(property = "casperjs.executable", defaultValue = "casperjs")
     private String casperExec;
 
-    @Parameter(alias = "tests.directory", defaultValue = "${basedir}/src/test/js")
+    @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/js")
     private File testsDir;
 
-    @Parameter(alias = "ignoreTestFailures")
+    @Parameter(property = "casperjs.test")
+    private String test;
+
+    @Parameter
+    private List<String> testsPatterns;
+
+    @Parameter(property = "casperjs.ignoreTestFailures", defaultValue = "${maven.test.failure.ignore}")
     private boolean ignoreTestFailures = false;
 
-    @Parameter(alias = "verbose")
+    @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
 
     // Parameters for the CasperJS options
 
-    @Parameter(alias = "include.javascript")
+    @Parameter(property = "casperjs.include.javascript")
     private boolean includeJS = true;
 
-    @Parameter(alias = "include.coffeescript")
+    @Parameter(property = "casperjs.include.coffeescript")
     private boolean includeCS = true;
 
-    @Parameter(alias = "pre")
+    @Parameter(property = "casperjs.pre")
     private String pre;
 
-    @Parameter(alias = "post")
+    @Parameter(property = "casperjs.post")
     private String post;
 
-    @Parameter(alias = "includes")
+    @Parameter(property = "casperjs.includes")
     private String includes;
 
-    @Parameter(alias = "xunit")
+    @Parameter(property = "casperjs.xunit")
     private String xUnit;
 
-    @Parameter(alias = "logLevel")
+    @Parameter(property = "casperjs.logLevel")
     private String logLevel;
 
-    @Parameter(alias = "direct")
+    @Parameter(property = "casperjs.direct")
     private boolean direct = false;
 
-    @Parameter(alias = "failFast")
+    @Parameter(property = "casperjs.failFast")
     private boolean failFast = false;
 
-    @Parameter(alias = "engine")
+    @Parameter(property = "casperjs.engine")
     private String engine;
 
     @Parameter
@@ -81,70 +86,43 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     private DefaultArtifactVersion casperJsVersion;
 
-    private Log log = getLog();
-
     private void init() throws MojoFailureException {
+        LogUtils.setLog(getLog(), verbose);
         if (StringUtils.isBlank(casperExec)) {
             throw new MojoFailureException("CasperJS executable is not defined");
         }
         // Test CasperJS
         casperJsVersion = new DefaultArtifactVersion(checkVersion(casperExec));
         if (verbose) {
-            log.info("CasperJS version: " + casperJsVersion);
+            getLogger().info("CasperJS version: " + casperJsVersion);
         }
     }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         init();
-        Result globalResult = new Result();
-        log.info("Looking for scripts in " + testsDir + "...");
-        if (includeJS) {
-            globalResult.add(executeScripts(".js"));
-        } else {
-            log.info("JavaScript files ignored");
-        }
-        if (includeCS) {
-            globalResult.add(executeScripts(".coffee"));
-        } else {
-            log.info("CoffeeScript files ignored");
-        }
-        log.info(globalResult.print());
+        List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsPatterns, includeJS, includeCS)).findScripts();
+        Result globalResult = executeScripts(scripts);
+        getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {
             throw new MojoFailureException("There are " + globalResult.getFailures() + " tests failures");
         }
     }
 
-    private Result executeScripts(final String ext) {
+    private Result executeScripts(final List<String> files) {
         Result result = new Result();
-        List<File> files = findFiles(ext, testsDir);
-        if (files.isEmpty()) {
-            log.warn("No " + ext + " files found in directory " + testsDir);
-        } else {
-            for (File f : files) {
-                log.debug("Execution of test " + f.getName());
-                int res = executeScript(f);
-                if (res == 0) {
-                    result.addSuccess();
-                } else {
-                    log.warn("Test '" + f.getName() + "' has failure");
-                    result.addFailure();
-                }
+        for (String file : files) {
+            File f = new File(testsDir, file);
+            getLogger().debug("Execution of test " + f.getName());
+            int res = executeScript(f);
+            if (res == 0) {
+                result.addSuccess();
+            } else {
+                getLogger().warn("Test '" + f.getName() + "' has failure");
+                result.addFailure();
             }
         }
         return result;
-    }
-
-    private List<File> findFiles(String ext, File folder) {
-        List<File> files = new ArrayList<File>();
-        for (File f : folder.listFiles()) {
-            if (f.isDirectory()) {
-                files.addAll(findFiles(ext, f));
-            } else if (StringUtils.endsWithIgnoreCase(f.getName(), ext)) {
-                files.add(f);
-            }
-        }
-        return files;
     }
 
     private int executeScript(File f) {
@@ -191,7 +169,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     }
 
     private String checkVersion(String casperExecutable) throws MojoFailureException {
-        log.debug("Check CasperJS version");
+        getLogger().debug("Check CasperJS version");
         InputStream stream = null;
         try {
             Process child = Runtime.getRuntime().exec(casperExecutable + " --version");
@@ -201,7 +179,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             return version;
         } catch (final IOException e) {
             if (verbose) {
-                log.error("Could not run CasperJS command", e);
+                getLogger().error("Could not run CasperJS command", e);
             }
             throw new MojoFailureException("Unable to determine casperJS version");
         } finally {
@@ -215,12 +193,12 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     }
 
     private int executeCommand(CommandLine line) {
-        log.debug("Execute CasperJS command [" + line + "]");
+        getLogger().debug("Execute CasperJS command [" + line + "]");
         try {
             return new DefaultExecutor().execute(line);
         } catch (final IOException e) {
             if (verbose) {
-                log.error("Could not run CasperJS command", e);
+                getLogger().error("Could not run CasperJS command", e);
             }
             return -1;
         }

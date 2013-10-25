@@ -127,37 +127,36 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     private int executeScript(File f) {
         CommandLine cmdLine = new CommandLine(casperExec);
-        if (casperJsVersion.compareTo(new DefaultArtifactVersion("1.1")) >= 0) {
-            cmdLine.addArgument("test");
-        }
+        cmdLine.addArgument("test");
+
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
-            cmdLine.addArgument(" --includes="+includes);
+            cmdLine.addArgument("--includes="+includes);
         }
         // Option --pre, to execute the scripts before the test suite
         if (StringUtils.isNotBlank(pre)) {
-            cmdLine.addArgument(" --pre="+pre);
+            cmdLine.addArgument("--pre="+pre);
         }
         // Option --pre, to execute the scripts after the test suite
         if (StringUtils.isNotBlank(post)) {
-            cmdLine.addArgument(" --post="+post);
+            cmdLine.addArgument("--post="+post);
         }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xUnit)) {
-            cmdLine.addArgument(" --xunit="+xUnit);
+            cmdLine.addArgument("--xunit="+xUnit);
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found
         if (failFast) {
-            cmdLine.addArgument(" --fail-fast");
+            cmdLine.addArgument("--fail-fast");
         }
         // Option --direct, to output log messages to the console
         if (direct) {
-            cmdLine.addArgument(" --direct");
+            cmdLine.addArgument("--direct");
         }
         // Option --engine, to select phantomJS or slimerJS engine
         if (StringUtils.isNotBlank(engine)) {
-            cmdLine.addArgument(" --engine="+engine);
+            cmdLine.addArgument("--engine="+engine);
         }
         cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {

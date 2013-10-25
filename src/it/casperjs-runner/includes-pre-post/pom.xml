@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>parameters</artifactId>
+  <artifactId>include-pre-post</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: parameters</name>
+  <name>CasperJS Runner :: includes, pre and post</name>
 
   <url>no-url</url>
 
@@ -41,14 +41,13 @@
             <goals>
               <goal>test</goal>
             </goals>
-            <configuration>
-              <arguments>
-                <argument>--arg1=Hello</argument>
-                <argument>--arg2=World</argument>
-              </arguments>
-            </configuration>
           </execution>
         </executions>
+        <configuration>
+          <includes>src/test/js/include.js</includes>
+          <pre>src/test/js/pre.js</pre>
+          <post>src/test/js/post.js</post>
+        </configuration>
       </plugin>
     </plugins>
 

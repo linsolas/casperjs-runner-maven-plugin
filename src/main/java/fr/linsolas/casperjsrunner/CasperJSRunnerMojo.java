@@ -49,6 +49,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
 
+    @Parameter
+    private List<String> includesPatterns;
+
     // Parameters for the CasperJS options
 
     @Parameter(property = "casperjs.include.javascript")
@@ -131,19 +134,31 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
-            cmdLine.addArgument("--includes="+includes);
+            cmdLine.addArgument("--includes=" + includes);
+        } else if (includesPatterns != null && !includesPatterns.isEmpty()) {
+            List<String> incs = new IncludesFinder(testsDir, includesPatterns).findIncludes();
+            if (incs != null && !incs.isEmpty()) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("--includes=");
+                for (String inc : incs) {
+                    builder.append(new File(testsDir, inc).getAbsolutePath());
+                    builder.append(",");
+                }
+                builder.deleteCharAt(builder.length() - 1);
+                cmdLine.addArgument(builder.toString());
+            }
         }
         // Option --pre, to execute the scripts before the test suite
         if (StringUtils.isNotBlank(pre)) {
-            cmdLine.addArgument("--pre="+pre);
+            cmdLine.addArgument("--pre=" + pre);
         }
         // Option --pre, to execute the scripts after the test suite
         if (StringUtils.isNotBlank(post)) {
-            cmdLine.addArgument("--post="+post);
+            cmdLine.addArgument("--post=" + post);
         }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xUnit)) {
-            cmdLine.addArgument("--xunit="+xUnit);
+            cmdLine.addArgument("--xunit=" + xUnit);
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found
@@ -156,7 +171,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         // Option --engine, to select phantomJS or slimerJS engine
         if (StringUtils.isNotBlank(engine)) {
-            cmdLine.addArgument("--engine="+engine);
+            cmdLine.addArgument("--engine=" + engine);
         }
         cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {

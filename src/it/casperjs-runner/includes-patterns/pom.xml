@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>testsPatterns</artifactId>
+  <artifactId>include-patterns</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: tests patterns</name>
+  <name>CasperJS Runner :: includes patterns</name>
 
   <url>no-url</url>
 
@@ -41,13 +41,13 @@
             <goals>
               <goal>test</goal>
             </goals>
-            <configuration>
-              <testsPatterns>
-                <testsPattern>*Test*</testsPattern>
-              </testsPatterns>
-            </configuration>
           </execution>
         </executions>
+        <configuration>
+          <includesPatterns>
+            <includePattern>*.inc.js</includePattern>
+          </includesPatterns>
+        </configuration>
       </plugin>
     </plugins>
 

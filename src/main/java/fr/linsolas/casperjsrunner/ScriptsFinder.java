@@ -10,27 +10,27 @@ import java.util.List;
 
 public class ScriptsFinder {
 
-    private File testsDir;
+    private File baseDir;
 
     private String specific;
 
     private List<String> patterns;
 
-    public ScriptsFinder(File testsDir, String specific, List<String> patterns) {
+    public ScriptsFinder(File baseDir, String specific, List<String> patterns) {
         if (patterns == null || patterns.isEmpty()) {
             throw new IllegalArgumentException("Patterns to search must be defined !");
         }
-        this.testsDir = testsDir;
+        this.baseDir = baseDir;
         this.specific = specific;
         this.patterns = patterns;
     }
 
     public List<String> findScripts() {
-        getLogger().info("Looking for scripts in " + testsDir + "...");
+        getLogger().info("Looking for scripts in " + baseDir + "...");
 
         DirectoryScanner scanner = new DirectoryScanner();
         scanner.setCaseSensitive(false);
-        scanner.setBasedir(testsDir);
+        scanner.setBasedir(baseDir);
         if (specific != null && !specific.isEmpty()) {
             scanner.setIncludes(new String[] { specific });
         } else {
@@ -40,7 +40,7 @@ public class ScriptsFinder {
 
         List<String> result = asList(scanner.getIncludedFiles());
         if (result.isEmpty()) {
-            getLogger().warn("No files found in directory " + testsDir + " matching criterias");
+            getLogger().warn("No files found in directory " + baseDir + " matching criterias");
         }
 
         return result;

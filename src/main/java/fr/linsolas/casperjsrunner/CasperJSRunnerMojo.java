@@ -1,185 +1,221 @@
 package fr.linsolas.casperjsrunner;
 
+import static fr.linsolas.casperjsrunner.LogUtils.getLogger;
+import static fr.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
  * User: Romain Linsolas
  * Date: 09/04/13
  */
-@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe=true)
+@Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe = true)
 public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Parameters for the plugin
 
-    @Parameter(alias = "casperjs.executable", defaultValue = "casperjs")
+    @Parameter(property = "casperjs.executable", defaultValue = "casperjs")
     private String casperExec;
 
-    @Parameter(alias = "tests.directory", defaultValue = "${basedir}/src/test/js")
+    @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/js")
     private File testsDir;
 
-    @Parameter(alias = "ignoreTestFailures")
+    @Parameter(property = "casperjs.test")
+    private String test;
+
+    @Parameter
+    private List<String> testsPatterns;
+
+    @Parameter(property = "casperjs.ignoreTestFailures", defaultValue = "${maven.test.failure.ignore}")
     private boolean ignoreTestFailures = false;
 
-    @Parameter(alias = "verbose")
+    @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
+
+    @Parameter
+    private List<String> includesPatterns;
 
     // Parameters for the CasperJS options
 
-    @Parameter(alias = "include.javascript")
+    @Parameter(property = "casperjs.include.javascript")
     private boolean includeJS = true;
 
-    @Parameter(alias = "include.coffeescript")
+    @Parameter(property = "casperjs.include.coffeescript")
     private boolean includeCS = true;
 
-    @Parameter(alias = "pre")
+    @Parameter(property = "casperjs.pre")
     private String pre;
 
-    @Parameter(alias = "post")
+    @Parameter(property = "casperjs.post")
     private String post;
 
-    @Parameter(alias = "includes")
+    @Parameter(property = "casperjs.includes")
     private String includes;
 
-    @Parameter(alias = "xunit")
+    @Parameter(property = "casperjs.xunit")
     private String xUnit;
 
-    @Parameter(alias = "logLevel")
+    @Parameter(property = "casperjs.logLevel")
     private String logLevel;
 
-    @Parameter(alias = "direct")
+    @Parameter(property = "casperjs.direct")
     private boolean direct = false;
 
-    @Parameter(alias = "failFast")
+    @Parameter(property = "casperjs.failFast")
     private boolean failFast = false;
 
-    private Log log = getLog();
+    @Parameter(property = "casperjs.engine")
+    private String engine;
+
+    @Parameter
+    private List<String> arguments;
+
+    private DefaultArtifactVersion casperJsVersion;
 
     private void init() throws MojoFailureException {
+        LogUtils.setLog(getLog(), verbose);
         if (StringUtils.isBlank(casperExec)) {
             throw new MojoFailureException("CasperJS executable is not defined");
         }
         // Test CasperJS
-        int res = executeCommand(casperExec + " --version");
-        if (res == -1) {
-            // Problem
-            throw new MojoFailureException("An error occurred when trying to execute CasperJS");
+        casperJsVersion = new DefaultArtifactVersion(checkVersion(casperExec));
+        if (verbose) {
+            getLogger().info("CasperJS version: " + casperJsVersion);
         }
     }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         init();
-        Result globalResult = new Result();
-        log.info("Looking for scripts in " + testsDir + "...");
-        if (includeJS) {
-            globalResult.add(executeScripts(".js"));
-        } else {
-            log.info("JavaScript files ignored");
-        }
-        if (includeCS) {
-            globalResult.add(executeScripts(".coffee"));
-        } else {
-            log.info("CoffeeScript files ignored");
-        }
-        log.info(globalResult.print());
+        List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsPatterns, includeJS, includeCS)).findScripts();
+        Result globalResult = executeScripts(scripts);
+        getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {
             throw new MojoFailureException("There are " + globalResult.getFailures() + " tests failures");
         }
     }
 
-    private Result executeScripts(final String ext) {
+    private Result executeScripts(final List<String> files) {
         Result result = new Result();
-        List<File> files = findFiles(ext, testsDir);
-        if (files.isEmpty()) {
-            log.warn("No " + ext + " files found in directory " + testsDir);
-        } else {
-            for (File f : files) {
-                log.debug("Execution of test " + f.getName());
-                int res = executeScript(f);
-                if (res == 0) {
-                    result.addSuccess();
-                } else {
-                    log.warn("Test '" + f.getName() + "' has failure");
-                    result.addFailure();
-                }
+        for (String file : files) {
+            File f = new File(testsDir, file);
+            getLogger().debug("Execution of test " + f.getName());
+            int res = executeScript(f);
+            if (res == 0) {
+                result.addSuccess();
+            } else {
+                getLogger().warn("Test '" + f.getName() + "' has failure");
+                result.addFailure();
             }
         }
         return result;
     }
-    
-    private List<File> findFiles(String ext, File folder) {
-    	List<File> files = new ArrayList<File>();
-    	for (File f : folder.listFiles()) {
-    		if (f.isDirectory()) {
-    			files.addAll(findFiles(ext, f));
-    		} else if (StringUtils.endsWithIgnoreCase(f.getName(), ext)) {
-    			files.add(f);
-    		}
-    	}
-    	return files;
-    }
 
     private int executeScript(File f) {
-        StringBuffer command = new StringBuffer();
-        command.append(casperExec);
+        CommandLine cmdLine = new CommandLine(casperExec);
+        cmdLine.addArgument("test");
+
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
-            command.append(" --includes=").append(includes);
+            cmdLine.addArgument("--includes=" + includes);
+        } else if (includesPatterns != null && !includesPatterns.isEmpty()) {
+            List<String> incs = new IncludesFinder(testsDir, includesPatterns).findIncludes();
+            if (incs != null && !incs.isEmpty()) {
+                StringBuilder builder = new StringBuilder();
+                builder.append("--includes=");
+                for (String inc : incs) {
+                    builder.append(new File(testsDir, inc).getAbsolutePath());
+                    builder.append(",");
+                }
+                builder.deleteCharAt(builder.length() - 1);
+                cmdLine.addArgument(builder.toString());
+            }
         }
         // Option --pre, to execute the scripts before the test suite
         if (StringUtils.isNotBlank(pre)) {
-            command.append(" --pre=").append(pre);
+            cmdLine.addArgument("--pre=" + pre);
         }
         // Option --pre, to execute the scripts after the test suite
         if (StringUtils.isNotBlank(post)) {
-            command.append(" --post=").append(post);
+            cmdLine.addArgument("--post=" + post);
         }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xUnit)) {
-            command.append(" --xunit=").append(xUnit);
+            cmdLine.addArgument("--xunit=" + xUnit);
         }
-        // Option --fast-fast, to terminate the test suite once a failure is found
+        // Option --fast-fast, to terminate the test suite once a failure is
+        // found
         if (failFast) {
-            command.append(" --fail-fast");
+            cmdLine.addArgument("--fail-fast");
         }
         // Option --direct, to output log messages to the console
         if (direct) {
-            command.append(" --direct");
+            cmdLine.addArgument("--direct");
         }
-        command.append(' ').append(f.getAbsolutePath());
-        return executeCommand(command.toString());
+        // Option --engine, to select phantomJS or slimerJS engine
+        if (StringUtils.isNotBlank(engine)) {
+            cmdLine.addArgument("--engine=" + engine);
+        }
+        cmdLine.addArgument(f.getAbsolutePath());
+        if (arguments != null && !arguments.isEmpty()) {
+            for (String argument : arguments) {
+                cmdLine.addArgument(argument, false);
+            }
+        }
+        return executeCommand(cmdLine);
     }
 
-    private int executeCommand(String command) {
-        log.debug("Execute CasperJS command [" + command + "]");
-        DefaultExecutor exec = new DefaultExecutor();
-        CommandLine line = CommandLine.parse(command);
+    private String checkVersion(String casperExecutable) throws MojoFailureException {
+        getLogger().debug("Check CasperJS version");
+        InputStream stream = null;
         try {
-            return exec.execute(line);
-        } catch (IOException e) {
+            Process child = Runtime.getRuntime().exec(casperExecutable + " --version");
+            stream = child.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            String version = reader.readLine();
+            return version;
+        } catch (final IOException e) {
             if (verbose) {
-                log.error("Could not run CasperJS command", e);
+                getLogger().error("Could not run CasperJS command", e);
+            }
+            throw new MojoFailureException("Unable to determine casperJS version");
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (final IOException e) {
+                }
+            }
+        }
+    }
+
+    private int executeCommand(CommandLine line) {
+        getLogger().debug("Execute CasperJS command [" + line + "]");
+        try {
+            return new DefaultExecutor().execute(line);
+        } catch (final IOException e) {
+            if (verbose) {
+                getLogger().error("Could not run CasperJS command", e);
             }
             return -1;
         }
     }
 
-
 }
-

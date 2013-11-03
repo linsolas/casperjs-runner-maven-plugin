@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>test-directory</artifactId>
+  <artifactId>include-patterns</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: specific test directory</name>
+  <name>CasperJS Runner :: includes patterns</name>
 
   <url>no-url</url>
 
@@ -44,7 +44,9 @@
           </execution>
         </executions>
         <configuration>
-          <testsDir>${basedir}/src/test/javascript</testsDir>
+          <includesPatterns>
+            <includePattern>*.inc.js</includePattern>
+          </includesPatterns>
         </configuration>
       </plugin>
     </plugins>

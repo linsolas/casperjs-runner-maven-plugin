@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>test-directory</artifactId>
+  <artifactId>recursive</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: specific test directory</name>
+  <name>CasperJS Runner :: recursive</name>
 
   <url>no-url</url>
 
@@ -43,9 +43,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <testsDir>${basedir}/src/test/javascript</testsDir>
-        </configuration>
       </plugin>
     </plugins>
 

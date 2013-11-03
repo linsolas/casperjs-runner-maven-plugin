@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>test-directory</artifactId>
+  <artifactId>tests-patterns</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: specific test directory</name>
+  <name>CasperJS Runner :: tests patterns</name>
 
   <url>no-url</url>
 
@@ -41,11 +41,13 @@
             <goals>
               <goal>test</goal>
             </goals>
+            <configuration>
+              <testsPatterns>
+                <testsPattern>*Test*</testsPattern>
+              </testsPatterns>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <testsDir>${basedir}/src/test/javascript</testsDir>
-        </configuration>
       </plugin>
     </plugins>
 

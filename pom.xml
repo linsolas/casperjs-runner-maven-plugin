@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.linsolas</groupId>
     <artifactId>casperjs-runner-maven-plugin</artifactId>
-    <version>1.0-RC1</version>
+    <version>1.0-RC2</version>
     <name>CasperJS runner Maven plugin</name>
     <description>Runs JavaScript and/or CoffeScript test files on CasperJS instance</description>
     <packaging>maven-plugin</packaging>
@@ -57,6 +57,16 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
         </dependency>
     </dependencies>
 

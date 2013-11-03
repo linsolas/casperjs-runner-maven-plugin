@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>test-directory</artifactId>
+  <artifactId>include-pre-post</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: specific test directory</name>
+  <name>CasperJS Runner :: includes, pre and post</name>
 
   <url>no-url</url>
 
@@ -44,7 +44,9 @@
           </execution>
         </executions>
         <configuration>
-          <testsDir>${basedir}/src/test/javascript</testsDir>
+          <includes>src/test/js/include.js</includes>
+          <pre>src/test/js/pre.js</pre>
+          <post>src/test/js/post.js</post>
         </configuration>
       </plugin>
     </plugins>

@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>test-directory</artifactId>
+  <artifactId>specificFile</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: specific test directory</name>
+  <name>CasperJS Runner :: specific file</name>
 
   <url>no-url</url>
 
@@ -41,11 +41,11 @@
             <goals>
               <goal>test</goal>
             </goals>
+            <configuration>
+              <test>hello.js</test>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <testsDir>${basedir}/src/test/javascript</testsDir>
-        </configuration>
       </plugin>
     </plugins>
 

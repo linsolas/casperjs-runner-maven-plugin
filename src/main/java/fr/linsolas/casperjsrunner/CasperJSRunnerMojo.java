@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -86,11 +87,16 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter
     private List<String> arguments;
+    
+    @Parameter
+    private Map<String, String> environmentVariables;
+    
+    @Parameter
+    private boolean skip = false;
 
     private DefaultArtifactVersion casperJsVersion;
 
     private void init() throws MojoFailureException {
-        LogUtils.setLog(getLog(), verbose);
         if (StringUtils.isBlank(casperExec)) {
             throw new MojoFailureException("CasperJS executable is not defined");
         }
@@ -103,6 +109,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+    	LogUtils.setLog(getLog(), verbose);
+        if (skip) {
+    		getLogger().info("Skipping CasperJsRunner execution");
+    		return;
+    	}
         init();
         List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsPatterns, includeJS, includeCS)).findScripts();
         Result globalResult = executeScripts(scripts);
@@ -209,7 +220,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private int executeCommand(CommandLine line) {
         getLogger().debug("Execute CasperJS command [" + line + "]");
         try {
-            return new DefaultExecutor().execute(line);
+            return new DefaultExecutor().execute(line, environmentVariables);
         } catch (final IOException e) {
             if (verbose) {
                 getLogger().error("Could not run CasperJS command", e);

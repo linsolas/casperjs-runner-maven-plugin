@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -28,6 +31,9 @@ import org.apache.maven.plugins.annotations.Parameter;
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe = true)
 public class CasperJSRunnerMojo extends AbstractMojo {
+	
+	// Pattern to split xUnit file name pattern.
+	private static Pattern XUNIT_SEP_PATTERN = Pattern.compile("(.*)\\.([^/\\\\]*)$");
 
     // Parameters for the plugin
 
@@ -158,7 +164,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xUnit)) {
-            cmdLine.addArgument("--xunit=" + xUnit);
+        	final Matcher matcher = XUNIT_SEP_PATTERN.matcher(xUnit);
+        	final String xUnitSingle;
+        	if (matcher.find()) {
+        		xUnitSingle = matcher.group(1) + '-' + f.getName() + '.' + matcher.group(2);
+        	}else {
+        		xUnitSingle = xUnit + f.getName();
+        	}
+            cmdLine.addArgument("--xunit=" + xUnitSingle);
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found

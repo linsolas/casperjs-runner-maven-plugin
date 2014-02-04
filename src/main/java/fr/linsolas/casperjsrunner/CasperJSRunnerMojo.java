@@ -173,6 +173,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         if (StringUtils.isNotBlank(engine)) {
             cmdLine.addArgument("--engine=" + engine);
         }
+        // Option --log-level, to set log level
+        if (StringUtils.isNotBlank(logLevel)) {
+            cmdLine.addArgument("--log-level=" + logLevel);
+        }
+        // 
         cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {
             for (String argument : arguments) {

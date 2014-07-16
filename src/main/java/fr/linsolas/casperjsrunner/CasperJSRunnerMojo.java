@@ -87,10 +87,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter
     private List<String> arguments;
-    
+
     @Parameter
     private Map<String, String> environmentVariables;
-    
+
     @Parameter
     private boolean skip = false;
 
@@ -109,11 +109,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-    	LogUtils.setLog(getLog(), verbose);
+        LogUtils.setLog(getLog(), verbose);
         if (skip) {
-    		getLogger().info("Skipping CasperJsRunner execution");
-    		return;
-    	}
+            getLogger().info("Skipping CasperJsRunner execution");
+            return;
+        }
         init();
         List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsPatterns, includeJS, includeCS)).findScripts();
         Result globalResult = executeScripts(scripts);

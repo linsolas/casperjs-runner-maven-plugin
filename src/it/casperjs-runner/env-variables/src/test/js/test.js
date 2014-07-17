@@ -1,6 +1,7 @@
-var casper = require('casper').create();
 var system = require('system');
 
-casper.echo('envKey from test.js is: ' + system.env.envKey);
-
-casper.exit();
+casper.test.begin('Fake test', 1, function(test) {
+  casper.echo('envKey from test.js is: ' + system.env.envKey);
+  test.assert(true);
+  test.done();
+});

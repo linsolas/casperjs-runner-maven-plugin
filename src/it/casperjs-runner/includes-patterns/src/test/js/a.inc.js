@@ -1,3 +1,3 @@
-aStepFunction = function() {
-  this.test.assert(true, "true is so true");
-}
+casper.aStepFunction = function(test) {
+  test.assert(true, "true is so true");
+};

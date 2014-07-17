@@ -1,11 +1,5 @@
-var casper = require('casper').create();
-
-casper.start('http://www.google.fr', function() {
-  this.test.assert(true, "true is so true");
-  this.test.assert(false, "false is wrong");
-});
-
-casper.run(function() {
-  this.test.done(2);
-  this.test.renderResults(true);
+casper.test.begin('Fake test', 2, function(test) {
+  test.assert(true, 'true is so true');
+  test.assert(false, 'false is so wrong');
+  test.done();
 });

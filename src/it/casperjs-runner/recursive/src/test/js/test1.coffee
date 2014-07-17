@@ -1,5 +1,4 @@
-casper = require('casper').create()
-
-casper.echo 'I am test1.coffee in parent dir !'
-
-casper.exit 0
+casper.test.begin 'Fake test 1', 1, (test) ->
+  casper.echo 'I am test1.coffee in parent dir !'
+  test.assert true
+  test.done()

@@ -1,3 +1,3 @@
-bStepFunction = function() {
-  this.test.assertNot(false, "false is wrong");
-}
+casper.bStepFunction = function(test) {
+  test.assertNot(false, "false is wrong");
+};

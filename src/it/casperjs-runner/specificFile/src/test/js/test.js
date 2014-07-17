@@ -1,5 +1,5 @@
-var casper = require('casper').create();
-
-casper.echo('Hello test.js');
-
-casper.exit();
+casper.test.begin('Fake test', 1, function(test) {
+  casper.echo('Hello test.js');
+  test.assert(true);
+  test.done();
+});

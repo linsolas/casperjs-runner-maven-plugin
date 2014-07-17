@@ -1,9 +1,5 @@
-casper.start();
-
-casper.then(aStepFunction);
-casper.then(bStepFunction);
-
-casper.run(function() {
-  this.test.done(2);
-  this.test.renderResults(true);
+casper.test.begin('Fake test', 2, function(test) {
+  casper.aStepFunction(test);
+  casper.bStepFunction(test);
+  test.done();
 });

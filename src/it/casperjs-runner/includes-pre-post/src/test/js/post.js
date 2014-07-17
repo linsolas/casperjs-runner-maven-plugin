@@ -1,4 +1,2 @@
-casper.run(function() {
-  this.test.done(2);
-  this.test.renderResults(true);
-});
+casper.echo('Hello from post.js !');
+casper.test.done();

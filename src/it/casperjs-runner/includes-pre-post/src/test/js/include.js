@@ -1,4 +1,4 @@
-stepFunction = function() {
-  this.test.assert(true, "true is so true");
-  this.test.assertNot(false, "false is wrong");
-}
+casper.stepFunction = function(test) {
+  test.assert(true, "true is so true");
+  test.assertNot(false, "false is wrong");
+};

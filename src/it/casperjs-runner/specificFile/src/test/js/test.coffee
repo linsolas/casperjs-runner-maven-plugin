@@ -1,5 +1,4 @@
-casper = require('casper').create()
-
-casper.echo 'Hello test.coffee'
-
-casper.exit 0
+casper.test.begin 'Fake test', 1, (test) ->
+  casper.echo 'Hello test.coffee'
+  test.assert true
+  test.done()

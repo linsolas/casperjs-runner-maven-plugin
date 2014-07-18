@@ -27,7 +27,19 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
-   </licenses>
+    </licenses>
+
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss-sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss-sonatype</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
 
     <developers>
         <developer>
@@ -126,6 +138,6 @@
             </plugin>
         </plugins>
     </build>
-    
+
 </project>
 

@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private String test;
 
     @Parameter
-    private List<String> testsPatterns;
+    private List<String> testsIncludes;
+
+    @Parameter
+    private List<String> testsExcludes;
 
     @Parameter(property = "casperjs.ignoreTestFailures", defaultValue = "${maven.test.failure.ignore}")
     private boolean ignoreTestFailures = false;
@@ -136,7 +140,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             return;
         }
         init();
-        List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsPatterns, includeJS, includeCS)).findScripts();
+        List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsIncludes, includeJS, includeCS), testsExcludes != null ? testsExcludes : new ArrayList<String>()).findScripts();
         Result globalResult = executeScripts(scripts);
         getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {

@@ -42,9 +42,12 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <testsPatterns>
-                <testsPattern>*Test*</testsPattern>
-              </testsPatterns>
+              <testsIncludes>
+                <testsInclude>*Test*</testsInclude>
+              </testsIncludes>
+              <testsExcludes>
+                <testsExclude>*Not*</testsExclude>
+              </testsExcludes>
             </configuration>
           </execution>
         </executions>

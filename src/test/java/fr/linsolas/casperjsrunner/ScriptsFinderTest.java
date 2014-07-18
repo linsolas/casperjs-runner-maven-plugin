@@ -29,6 +29,8 @@ public class ScriptsFinderTest {
         TEMP_DIR.mkdir();
         new File(TEMP_DIR, "test1.js").createNewFile();
         new File(TEMP_DIR, "test1.coffee").createNewFile();
+        new File(TEMP_DIR, "testNot1.js").createNewFile();
+        new File(TEMP_DIR, "testnot1.coffee").createNewFile();
         new File(TEMP_DIR, "testSuite2.js").createNewFile();
         new File(TEMP_DIR, "testSuite2.coffee").createNewFile();
     }
@@ -42,55 +44,86 @@ public class ScriptsFinderTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFindScriptWithNullPatterns() {
-        new ScriptsFinder(TEMP_DIR, null, null).findScripts();
+    public void testFindScriptWithNullIncludes() {
+        new ScriptsFinder(TEMP_DIR, null, null, null).findScripts();
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testFindScriptWithEmptyPatterns() {
-        new ScriptsFinder(TEMP_DIR, null, new ArrayList<String>()).findScripts();
+    public void testFindScriptWithEmptyIncludes() {
+        new ScriptsFinder(TEMP_DIR, null, new ArrayList<String>(), null).findScripts();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testFindScriptWithNullExcludes() {
+        new ScriptsFinder(TEMP_DIR, null, asList("*.*"), null).findScripts();
     }
 
     @Test
     public void testFindScript() {
         assertEquals(
-                newHashSet("test1.js", "test1.coffee", "testSuite2.js", "testSuite2.coffee"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.*")).findScripts()));
+                newHashSet("test1.js", "testNot1.js", "test1.coffee", "testnot1.coffee", "testSuite2.js", "testSuite2.coffee"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.*"), new ArrayList<String>()).findScripts()));
     }
 
     @Test
     public void testFindScriptWithFileName() {
         assertEquals(
                 newHashSet("testSuite2.js"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, "testSuite2.js", asList("*.*")).findScripts()));
+                newHashSet(new ScriptsFinder(TEMP_DIR, "testSuite2.js", asList("*.*"), new ArrayList<String>()).findScripts()));
         assertEquals(
                 newHashSet("test1.coffee"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.coffee", asList("*.*")).findScripts()));
+                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.coffee", asList("*.*"), new ArrayList<String>()).findScripts()));
     }
 
     @Test
-    public void testFindScriptWithPatterns() {
+    public void testFindScriptWithIncludes() {
         assertEquals(
-                newHashSet("test1.js", "testSuite2.js"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.js")).findScripts()));
+                newHashSet("test1.js", "testNot1.js", "testSuite2.js"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.js"), new ArrayList<String>()).findScripts()));
         assertEquals(
-                newHashSet("test1.coffee", "testSuite2.coffee"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.coffee")).findScripts()));
+                newHashSet("test1.coffee", "testnot1.coffee", "testSuite2.coffee"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.coffee"), new ArrayList<String>()).findScripts()));
         assertEquals(
                 newHashSet("testSuite2.js", "testSuite2.coffee"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*Suite*.*")).findScripts()));
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*Suite*.*"), new ArrayList<String>()).findScripts()));
     }
 
     @Test
-    public void testFindScriptWithFilenameAndPatterns() {
+    public void testFindScriptWithIncludesAndExcludes() {
+        assertEquals(
+                newHashSet("test1.js", "testSuite2.js"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.js"), asList("*not*")).findScripts()));
+        assertEquals(
+                newHashSet("test1.coffee", "testSuite2.coffee"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*.coffee"), asList("*not*")).findScripts()));
+        assertEquals(
+                newHashSet("testSuite2.js", "testSuite2.coffee"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, null, asList("*Suite*.*"), asList("*not*")).findScripts()));
+    }
+
+    @Test
+    public void testFindScriptWithFilenameAndIncludes() {
         assertEquals(
                 newHashSet("testSuite2.coffee"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, "testSuite2.coffee", asList("*.js")).findScripts()));
+                newHashSet(new ScriptsFinder(TEMP_DIR, "testSuite2.coffee", asList("*.js"), new ArrayList<String>()).findScripts()));
         assertEquals(
                 newHashSet("test1.js"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.js", asList("*.coffee")).findScripts()));
+                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.js", asList("*.coffee"), new ArrayList<String>()).findScripts()));
         assertEquals(
                 newHashSet("test1.js"),
-                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.js", asList("*Suite*.*")).findScripts()));
+                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.js", asList("*Suite*.*"), new ArrayList<String>()).findScripts()));
+    }
+
+    @Test
+    public void testFindScriptWithFilenameAndExcludes() {
+        assertEquals(
+                newHashSet("testSuite2.coffee"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, "testSuite2.coffee", asList("*.js"), asList("*Suite*")).findScripts()));
+        assertEquals(
+                newHashSet("test1.js"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.js", asList("*.coffee"), asList("*test*")).findScripts()));
+        assertEquals(
+                newHashSet("test1.js"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, "test1.js", asList("*Suite*.*"), asList("*test*")).findScripts()));
     }
 }

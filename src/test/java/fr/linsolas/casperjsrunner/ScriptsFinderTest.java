@@ -73,6 +73,9 @@ public class ScriptsFinderTest {
         assertEquals(
                 newHashSet("test1.coffee"),
                 newHashSet(new ScriptsFinder(TEMP_DIR, "test1.coffee", asList("*.*"), new ArrayList<String>()).findScripts()));
+        assertEquals(
+                newHashSet("test1.js","test1.coffee"),
+                newHashSet(new ScriptsFinder(TEMP_DIR, "test1", asList("*.*"), new ArrayList<String>()).findScripts()));
     }
 
     @Test

@@ -42,7 +42,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(property = "casperjs.executable")
     private String casperExecPath;
 
-    @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/js")
+    @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/casperjs")
     private File testsDir;
 
     @Parameter(property = "casperjs.test")
@@ -116,6 +116,26 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     private DefaultArtifactVersion casperJsVersion;
 
+    private File includesDir;
+
+    private File scriptsDir;
+
+    @Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        LogUtils.setLog(getLog(), verbose);
+        if (skip) {
+            getLogger().info("Skipping CasperJsRunner execution");
+            return;
+        }
+        init();
+        List<String> scripts = findScripts();
+        Result globalResult = executeScripts(scripts);
+        getLogger().info(globalResult.print());
+        if (!ignoreTestFailures && globalResult.getFailures() > 0) {
+            throw new MojoFailureException("There are " + globalResult.getFailures() + " tests failures");
+        }
+    }
+
     private void init() throws MojoFailureException {
         findCasperRuntime();
         if (StringUtils.isBlank(casperRuntime)) {
@@ -126,32 +146,44 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         if (casperJsVersion.getMajorVersion() != 1 || casperJsVersion.getMinorVersion() < 1) {
             throw new MojoFailureException("This version of the plugin only supports CasperJS 1.1+ executable (was "+casperJsVersion+")");
         }
-        
+
         if (verbose) {
             getLogger().info("CasperJS version: " + casperJsVersion);
         }
+
+        testsIncludes = checkPatterns(testsIncludes, includeJS, includeCS);
+
+        if (testsExcludes == null) {
+            testsExcludes = new ArrayList<String>();
+        }
+
+        if (includesPatterns == null) {
+            includesPatterns = new ArrayList<String>();
+        }
+
+        includesDir = testsDir;
+        scriptsDir = testsDir;
+        File defaultIncludesDir = new File(testsDir, "includes");
+        File defaultScriptsDir = new File(testsDir, "scripts");
+        if (defaultScriptsDir.exists() && defaultScriptsDir.isDirectory()) {
+            getLogger().debug("'scripts' subdirectory found, altering 'scriptsDir'");
+            scriptsDir = defaultScriptsDir;
+            if (defaultIncludesDir.exists() && defaultIncludesDir.isDirectory() && includesPatterns.isEmpty()) {
+                getLogger().debug("'includes' subdirectory found and 'includesPatterns' is empty, altering 'includesDir' and 'includesPatterns'");
+                includesDir = defaultIncludesDir;
+                includesPatterns.add("**/*.js");
+            }
+        }
     }
 
-    @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
-        LogUtils.setLog(getLog(), verbose);
-        if (skip) {
-            getLogger().info("Skipping CasperJsRunner execution");
-            return;
-        }
-        init();
-        List<String> scripts = new ScriptsFinder(testsDir, test, checkPatterns(testsIncludes, includeJS, includeCS), testsExcludes != null ? testsExcludes : new ArrayList<String>()).findScripts();
-        Result globalResult = executeScripts(scripts);
-        getLogger().info(globalResult.print());
-        if (!ignoreTestFailures && globalResult.getFailures() > 0) {
-            throw new MojoFailureException("There are " + globalResult.getFailures() + " tests failures");
-        }
+    private List<String> findScripts() {
+        return new ScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes).findScripts();
     }
 
     private Result executeScripts(final List<String> files) {
         Result result = new Result();
         for (String file : files) {
-            File f = new File(testsDir, file);
+            File f = new File(scriptsDir, file);
             getLogger().debug("Execution of test " + f.getName());
             int res = executeScript(f);
             if (res == 0) {
@@ -171,13 +203,13 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // Option --includes, to includes files before each test execution
         if (StringUtils.isNotBlank(includes)) {
             cmdLine.addArgument("--includes=" + includes);
-        } else if (includesPatterns != null && !includesPatterns.isEmpty()) {
-            List<String> incs = new IncludesFinder(testsDir, includesPatterns).findIncludes();
+        } else if (!includesPatterns.isEmpty()) {
+            List<String> incs = new IncludesFinder(includesDir, includesPatterns).findIncludes();
             if (incs != null && !incs.isEmpty()) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("--includes=");
                 for (String inc : incs) {
-                    builder.append(new File(testsDir, inc).getAbsolutePath());
+                    builder.append(new File(includesDir, inc).getAbsolutePath());
                     builder.append(",");
                 }
                 builder.deleteCharAt(builder.length() - 1);
@@ -187,10 +219,16 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // Option --pre, to execute the scripts before the test suite
         if (StringUtils.isNotBlank(pre)) {
             cmdLine.addArgument("--pre=" + pre);
+        } else if (new File(testsDir, "pre.js").exists()) {
+            getLogger().debug("Using automatically found 'pre.js' file on " + testsDir.getName() + " directory as --pre");
+            cmdLine.addArgument("--pre=" + new File(testsDir, "pre.js").getAbsolutePath());
         }
         // Option --pre, to execute the scripts after the test suite
         if (StringUtils.isNotBlank(post)) {
             cmdLine.addArgument("--post=" + post);
+        } else if (new File(testsDir, "post.js").exists()) {
+            getLogger().debug("Using automatically found 'post.js' file on " + testsDir.getName() + " directory as --post");
+            cmdLine.addArgument("--post=" + new File(testsDir, "post.js").getAbsolutePath());
         }
         // Option --log-level, to set the log level
         if (StringUtils.isNotBlank(logLevel)) {

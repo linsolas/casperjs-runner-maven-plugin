@@ -6,6 +6,7 @@ import static java.util.Arrays.asList;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScriptsFinder {
@@ -37,7 +38,14 @@ public class ScriptsFinder {
         scanner.setCaseSensitive(false);
         scanner.setBasedir(baseDir);
         if (specific != null && !specific.isEmpty()) {
-            scanner.setIncludes(new String[] { specific });
+            List<String> temp = new ArrayList<String>();
+            if (specific.endsWith(".js") || specific.endsWith(".coffee")) {
+                temp.add("**/"+specific);
+            } else {
+                temp.add("**/"+specific+".js");
+                temp.add("**/"+specific+".coffee");
+            }
+            scanner.setIncludes(temp.toArray(new String[temp.size()]));
         } else {
             scanner.setIncludes(includes.toArray(new String[includes.size()]));
             scanner.setExcludes(excludes.toArray(new String[excludes.size()]));

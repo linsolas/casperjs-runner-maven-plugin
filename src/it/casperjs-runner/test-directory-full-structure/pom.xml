@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>default-values</artifactId>
+  <artifactId>test-directory-full-structure</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: default values</name>
+  <name>CasperJS Runner :: specific test directory with full structure</name>
 
   <url>no-url</url>
 
@@ -43,6 +43,9 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <testsDir>${basedir}/src/test/javascript</testsDir>
+        </configuration>
       </plugin>
     </plugins>
 

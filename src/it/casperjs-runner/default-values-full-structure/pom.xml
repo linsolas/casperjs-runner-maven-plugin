@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>specificFile</artifactId>
+  <artifactId>default-values-full-structure</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: specific file</name>
+  <name>CasperJS Runner :: default values with full structure</name>
 
   <url>no-url</url>
 
@@ -41,9 +41,6 @@
             <goals>
               <goal>test</goal>
             </goals>
-            <configuration>
-              <test>hello</test>
-            </configuration>
           </execution>
         </executions>
       </plugin>

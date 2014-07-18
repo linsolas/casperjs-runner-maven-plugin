@@ -44,9 +44,9 @@
           </execution>
         </executions>
         <configuration>
-          <includes>src/test/js/include.js</includes>
-          <pre>src/test/js/pre.js</pre>
-          <post>src/test/js/post.js</post>
+          <includes>src/test/casperjs/include.js</includes>
+          <pre>src/test/casperjs/mypre.js</pre>
+          <post>src/test/casperjs/mypost.js</post>
         </configuration>
       </plugin>
     </plugins>

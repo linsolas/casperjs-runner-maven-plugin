@@ -44,7 +44,7 @@
           </execution>
         </executions>
         <configuration>
-          <xUnit>${project.build.directory}/casperjsResults.xml</xUnit>
+          <xunit>${project.build.directory}/casperjsResults.xml</xunit>
         </configuration>
       </plugin>
     </plugins>

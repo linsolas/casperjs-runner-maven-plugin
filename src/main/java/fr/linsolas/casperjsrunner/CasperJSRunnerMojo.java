@@ -87,7 +87,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private List<String> includesPatterns;
 
     @Parameter(property = "casperjs.xunit")
-    private String xUnit;
+    private String xunit;
 
     @Parameter(property = "casperjs.logLevel")
     private String logLevel;
@@ -235,8 +235,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             cmdLine.addArgument("--log-level=" + logLevel);
         }
         // Option --xunit, to export results in XML file
-        if (StringUtils.isNotBlank(xUnit)) {
-            cmdLine.addArgument("--xunit=" + xUnit);
+        if (StringUtils.isNotBlank(xunit)) {
+            cmdLine.addArgument("--xunit=" + xunit);
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found

@@ -66,8 +66,8 @@ The CasperJS Runner Maven plugin can be configured with the following options:
         <td><code>testIncludes</code></td>
         <td>A list of <code>&lt;testInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.</td>
         <td>When not specified and when the test parameter is not specified, the default includes will be (javascript patterns will only be set if <code>includeJS</code> is <code>true</code>, and coffee patterns will only be set if <code>includeCS</code> is <code>true</code>)
-<br/><br/><code>
-&lt;testIncludes&gt;<br/>
+<br/><br/>
+<code>&lt;testIncludes&gt;<br/>
 &nbsp;&nbsp;&lt;testInclude&gt;**/Test*.js&lt;/testInclude&gt;<br/>
 &nbsp;&nbsp;&lt;testInclude&gt;**/*Test.js&lt;/testInclude&gt;<br/>
 &nbsp;&nbsp;&lt;testInclude&gt;**/*TestCase.js&lt;/testInclude&gt;<br/>
@@ -111,7 +111,7 @@ The CasperJS Runner Maven plugin can be configured with the following options:
         <td>Environment variables to set on the command line, instead of the default, inherited, ones.</td>
         <td></td>
         <td>No</td>
-        <td><code></code></td>
+        <td></td>
     </tr>
     <tr>
         <td><code>skip</code></td>
@@ -138,11 +138,13 @@ You can also add in the ```<configuration>``` part several elements that will be
     </tr>
     <tr>
         <td><code>pre</code></td>
-        <td>Set the value for the CasperJS option <code>--pre=[pre-test.js]</code>: will add the tests contained in pre-test.js before executing the test suite.</td>
+        <td>Set the value for the CasperJS option <code>--pre=[pre-test.js]</code>: will add the tests contained in pre-test.js before executing the test suite.
+        If a <code>pre.js</code> file is found on the <code>${tests.directory}</code>, this option will be set automatically</td>
     </tr>
     <tr>
         <td><code>post</code></td>
-        <td>Set the value for the CasperJS option <code>--post=[post-test.js]</code>: will add the tests contained in post-test.js after having executed the whole test suite.</td>
+        <td>Set the value for the CasperJS option <code>--post=[post-test.js]</code>: will add the tests contained in post-test.js after having executed the whole test suite.
+        If a <code>post.js</code> file is found on the <code>${tests.directory}</code>, this option will be set automatically</td>
     </tr>
     <tr>
         <td><code>includes</code></td>
@@ -152,8 +154,8 @@ You can also add in the ```<configuration>``` part several elements that will be
         <td><code>includesPatterns</code></td>
         <td>A list of <code>&lt;includesPattern&gt;</code> elements specifying the files (by pattern) to set on the <code>--includes</code> option.<br/>
         When not specified and the <code>${tests.directory}/includes</code> directory exists, this will be set to 
-<br/><br/><code>
-&lt;includesPatterns&gt;<br/>
+<br/><br/>
+<code>&lt;includesPatterns&gt;<br/>
 &nbsp;&nbsp;&lt;includesPattern&gt;${tests.directory}/includes/**/*.js&lt;/includesPattern&gt;<br/>
 &lt;/includesPatterns&gt;</code></td>
     </tr>

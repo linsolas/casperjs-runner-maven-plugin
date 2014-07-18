@@ -17,6 +17,7 @@
     </properties>
 
     <scm>
+        <connection>scm:git:git://github.com/linsolas/casperjs-runner-maven-plugin.git</connection>
         <url>https://github.com/linsolas/casperjs-runner-maven-plugin.git</url>
     </scm>
 
@@ -32,6 +33,10 @@
         <developer>
             <id>linsolas</id>
             <name>Romain Linsolas</name>
+        </developer>
+        <developer>
+            <id>bguerin</id>
+            <name>Benoit Guerin</name>
         </developer>
     </developers>
 

@@ -1,4 +1,4 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;

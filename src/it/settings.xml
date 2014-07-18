@@ -57,6 +57,6 @@
   </profiles>
 
   <pluginGroups>
-    <pluginGroup>fr.linsolas</pluginGroup>
+    <pluginGroup>com.github.linsolas</pluginGroup>
   </pluginGroups>
 </settings>

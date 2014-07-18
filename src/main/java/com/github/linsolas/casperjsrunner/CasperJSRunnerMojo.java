@@ -1,7 +1,7 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
-import static fr.linsolas.casperjsrunner.LogUtils.getLogger;
-import static fr.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
+import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 
 import java.io.BufferedReader;
 import java.io.File;

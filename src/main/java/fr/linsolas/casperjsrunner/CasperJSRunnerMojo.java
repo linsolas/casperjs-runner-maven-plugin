@@ -198,6 +198,16 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     private int executeScript(File f) {
         CommandLine cmdLine = new CommandLine(casperRuntime);
+
+        // Option --verbose
+        if (verbose) {
+            cmdLine.addArgument("--verbose");
+        }
+        // Option --log-level, to set the log level
+        if (StringUtils.isNotBlank(logLevel)) {
+            cmdLine.addArgument("--log-level=" + logLevel);
+        }
+
         cmdLine.addArgument("test");
 
         // Option --includes, to includes files before each test execution
@@ -229,10 +239,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         } else if (new File(testsDir, "post.js").exists()) {
             getLogger().debug("Using automatically found 'post.js' file on " + testsDir.getName() + " directory as --post");
             cmdLine.addArgument("--post=" + new File(testsDir, "post.js").getAbsolutePath());
-        }
-        // Option --log-level, to set the log level
-        if (StringUtils.isNotBlank(logLevel)) {
-            cmdLine.addArgument("--log-level=" + logLevel);
         }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xunit)) {

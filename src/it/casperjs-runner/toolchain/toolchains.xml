@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<toolchains>
+
+  <toolchain>
+    <type>casperjs</type>
+    <provides>
+      <version>1.1.0</version>
+    </provides>
+    <configuration>
+      <casperjsExecutable>/opt/casperjs/bin/casperjs</casperjsExecutable>
+    </configuration>
+  </toolchain>
+
+</toolchains>

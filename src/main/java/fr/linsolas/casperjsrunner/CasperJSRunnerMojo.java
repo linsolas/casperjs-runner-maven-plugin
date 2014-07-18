@@ -15,12 +15,18 @@ import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.toolchain.Toolchain;
+import org.apache.maven.toolchain.ToolchainManager;
+
+import fr.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
@@ -32,8 +38,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Parameters for the plugin
 
-    @Parameter(property = "casperjs.executable", defaultValue = "casperjs")
-    private String casperExec;
+    @Parameter(property = "casperjs.executable")
+    private String casperExecPath;
 
     @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/js")
     private File testsDir;
@@ -94,17 +100,29 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter
     private boolean skip = false;
 
+    // Injected components
+
+    @Parameter(defaultValue="${session}")
+    private MavenSession session;
+
+    @Component
+    private ToolchainManager toolchainManager;
+
+    private String casperRuntime;
+
     private DefaultArtifactVersion casperJsVersion;
 
     private void init() throws MojoFailureException {
-        if (StringUtils.isBlank(casperExec)) {
-            throw new MojoFailureException("CasperJS executable is not defined");
+        findCasperRuntime();
+        if (StringUtils.isBlank(casperRuntime)) {
+            throw new MojoFailureException("CasperJS executable not found");
         }
-        // Test CasperJS
-        casperJsVersion = new DefaultArtifactVersion(checkVersion(casperExec));
+
+        retrieveVersion();
         if (casperJsVersion.getMajorVersion() != 1 || casperJsVersion.getMinorVersion() < 1) {
             throw new MojoFailureException("This version of the plugin only supports CasperJS 1.1+ executable (was "+casperJsVersion+")");
         }
+        
         if (verbose) {
             getLogger().info("CasperJS version: " + casperJsVersion);
         }
@@ -143,7 +161,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     }
 
     private int executeScript(File f) {
-        CommandLine cmdLine = new CommandLine(casperExec);
+        CommandLine cmdLine = new CommandLine(casperRuntime);
         cmdLine.addArgument("test");
 
         // Option --includes, to includes files before each test execution
@@ -196,15 +214,43 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         return executeCommand(cmdLine);
     }
 
-    private String checkVersion(String casperExecutable) throws MojoFailureException {
+    private void findCasperRuntime() {
+        getLogger().debug("Finding casperjs runtime ...");
+
+        getLogger().debug("Trying from toolchain");
+        final Toolchain tc = toolchainManager.getToolchainFromBuildContext(DefaultCasperjsToolchain.KEY_CASPERJS_TYPE, session);
+        if (tc != null) {
+            getLogger().debug("Toolchain in casperjs-plugin: " + tc);
+            if (casperExecPath != null) {
+                getLogger().warn(
+                        "Toolchains are ignored, 'casperRuntime' parameter is set to " + casperExecPath);
+                casperRuntime = casperExecPath;
+            } else {
+                getLogger().debug("Found from toolchain");
+                casperRuntime = tc.findTool("casperjs");
+            }
+        }
+
+        if (casperRuntime == null) {
+            getLogger().debug("No toolchain found, failling back to parameter");
+            casperRuntime = casperExecPath;
+        }
+
+        if (casperRuntime == null) {
+            getLogger().debug("No parameter specified, failling back to default 'casperjs'");
+            casperRuntime = "casperjs";
+        }
+    }
+
+    private void retrieveVersion() throws MojoFailureException {
         getLogger().debug("Check CasperJS version");
         InputStream stream = null;
         try {
-            Process child = Runtime.getRuntime().exec(casperExecutable + " --version");
+            Process child = Runtime.getRuntime().exec(casperRuntime + " --version");
             stream = child.getInputStream();
             BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
             String version = reader.readLine();
-            return version;
+            casperJsVersion = new DefaultArtifactVersion(version);
         } catch (final IOException e) {
             if (verbose) {
                 getLogger().error("Could not run CasperJS command", e);

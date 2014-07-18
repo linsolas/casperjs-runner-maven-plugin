@@ -122,7 +122,7 @@ The CasperJS Runner Maven plugin can be configured with the following options:
     </tr>
     <tr>
         <td><code>verbose</code></td>
-        <td>Set the *plugin* to be verbose during its execution. It will not impact the verbosity of the CasperJS execution.</td>
+        <td>Set the plugin to be verbose during its execution. It will ALSO impact the verbosity of the CasperJS execution (ie, setting the --verbose command line option).</td>
         <td><code>${maven.verbose}</code>, falling back to false</td>
         <td>No</td>
         <td><code>casperjs.verbose</code></td>
@@ -178,6 +178,10 @@ You can also add in the ```<configuration>``` part several elements that will be
     <tr>
         <td><code>engine</code></td>
         <td>CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine (phantomjs or slimerjs)</td>
+    </tr>
+    <tr>
+        <td><code>arguments</code></td>
+        <td>A list of <code>&lt;argument&gt;</code> to add to the casperjs command line.</td>
     </tr>
 </table>
 

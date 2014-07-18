@@ -5,7 +5,7 @@ This project aims to run [CasperJS](http://casperjs.org/) tests in a Maven build
 
 ## System requirements
 
-This plugin has been tested on an environment where PhantomJS (v**1.9.0**) and CasperJS (v**1.0.2**) where installed.
+This plugin has been tested on an environment where PhantomJS (v**1.9.7**) and CasperJS (v**1.1.0-beta3**) where installed.
 
 
 ## Build
@@ -20,7 +20,7 @@ Add, in your ```<build><plugins>``` part of your ```pom.xml``` file the followin
     <plugin>
         <groupId>fr.linsolas</groupId>
         <artifactId>casperjs-runner-maven-plugin</artifactId>
-        <version>1.0-RC1</version>
+        <version>1.1-RC0</version>
         <configuration>
             <!-- see below -->
         </configuration>
@@ -38,42 +38,94 @@ The CasperJS Runner Maven plugin can be configured with the following options:
         <th>Description</th>
         <th>Default value</th>
         <th>Mandatory</th>
+        <th>User property (to set from command line)</th>
     </tr>
     <tr>
-        <td><code>casperjs.executable</code></td>
+        <td><code>casperExecPath</code></td>
         <td>Complete path of the executable for CasperJS.</td>
-        <td>None</td>
-        <td>Yes</td>
+        <td>Found from <a href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a> named <b><i>casperjs</b></i>, then from this parameter, then from PATH with default value of <b>casperjs</b></td>
+        <td>No</td>
+        <td><code>casperjs.executable</code></td>
     </tr>
     <tr>
-        <td><code>tests.directory</code></td>
+        <td><code>testsDir</code></td>
         <td>Directory where the tests to execute are stored.</td>
-        <td>None</td>
-        <td>Yes</td>
+        <td><code>${basedir}/src/test/casperjs</code>.<br/>
+        If <code>${tests.directory}/includes</code> and <code>${tests.directory}/scripts</code> directories exist, this is changed to <code>${tests.directory}/scripts</code> and all <code>*.js</code> files in <code>${tests.directory}/includes</code> will automatically be added to the CasperJS <code>--includes</code> list.</td>
+        <td>No</td>
+        <td><code>tests.directory</code></td>
+    </tr>
+    <tr>
+        <td><code>test</code></td>
+        <td>Specify this parameter to run individual tests by file name, overriding the <code>testIncludes</code>/<code>testExcludes</code> parameters. Each pattern you specify here will be used to create an include pattern formatted like <code>**/${test}.{js,coffee}</code>, so you can just type "-Dtest=MyTest" to run a single test called <code>foo/MyTest.js</code> or <code>foo/MyTest.coffee</code>.</td>
+        <td></td>
+        <td>No</td>
+        <td><code>casperjs.test</code></td>
+    </tr>
+    <tr>
+        <td><code>testIncludes</code></td>
+        <td>A list of <code>&lt;testInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.</td>
+        <td>When not specified and when the test parameter is not specified, the default includes will be (javascript patterns will only be set if <code>includeJS</code> is <code>true</code>, and coffee patterns will only be set if <code>includeCS</code> is <code>true</code>)
+<br/><br/><code>
+&lt;testIncludes&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**/Test*.js&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**/*Test.js&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**/*TestCase.js&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**/Test*.coffee&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**/*Test.coffee&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**/*TestCase.coffee&lt;/testInclude&gt;<br/>
+&lt;/testIncludes&gt;</code></td>
+        <td>No</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><code>testExcludes</code></td>
+        <td>A list of <code>&lt;testExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.</td>
+        <td></td>
+        <td>No</td>
+        <td></td>
     </tr>
     <tr>
         <td><code>ignoreTestFailures</code></td>
         <td>Do we ignore the tests failures. If yes, the plugin will not fail at the end if there was tests failures.</td>
-        <td>false</td>
+        <td><code>${maven.test.failure.ignore}</code>, falling back to false</td>
         <td>No</td>
+        <td><code>casperjs.ignoreTestFailures</code></td>
     </tr>
     <tr>
-        <td><code>include.javascript</code></td>
+        <td><code>includeJS</code></td>
         <td>A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.</td>
         <td>true</td>
         <td>No</td>
+        <td><code>casperjs.include.javascript</code></td>
     </tr>
     <tr>
-        <td><code>include.coffeescript</code></td>
+        <td><code>includeCS</code></td>
         <td>A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.</td>
         <td>true</td>
         <td>No</td>
+        <td><code>casperjs.include.coffeescript</code></td>
+    </tr>
+    <tr>
+        <td><code>environmentVariables</code></td>
+        <td>Environment variables to set on the command line, instead of the default, inherited, ones.</td>
+        <td></td>
+        <td>No</td>
+        <td><code></code></td>
+    </tr>
+    <tr>
+        <td><code>skip</code></td>
+        <td>Set this to <code>true</code> to bypass unit tests entirely.</td>
+        <td><code>${maven.test.skip}</code>, falling back to false</td>
+        <td>No</td>
+        <td><code>casperjs.skip</code></td>
     </tr>
     <tr>
         <td><code>verbose</code></td>
         <td>Set the *plugin* to be verbose during its execution. It will not impact the verbosity of the CasperJS execution.</td>
-        <td>false</td>
+        <td><code>${maven.verbose}</code>, falling back to false</td>
         <td>No</td>
+        <td><code>casperjs.verbose</code></td>
     </tr>
 </table>
 
@@ -97,12 +149,21 @@ You can also add in the ```<configuration>``` part several elements that will be
         <td>Set the value for the CasperJS option <code>--includes=[foo.js,bar.js]</code>: will includes the foo.js and bar.js files before each test file execution.</td>
     </tr>
     <tr>
+        <td><code>includesPatterns</code></td>
+        <td>A list of <code>&lt;includesPattern&gt;</code> elements specifying the files (by pattern) to set on the <code>--includes</code> option.<br/>
+        When not specified and the <code>${tests.directory}/includes</code> directory exists, this will be set to 
+<br/><br/><code>
+&lt;includesPatterns&gt;<br/>
+&nbsp;&nbsp;&lt;includesPattern&gt;${tests.directory}/includes/**/*.js&lt;/includesPattern&gt;<br/>
+&lt;/includesPatterns&gt;</code></td>
+    </tr>
+    <tr>
         <td><code>xunit</code></td>
         <td>Set the value for the CasperJS option <code>--xunit=[filename]</code>: will export test suite results in the specified xUnit XML file.</td>
     </tr>
     <tr>
         <td><code>logLevel</code></td>
-        <td>Set the value for the CasperJS option --log-level=[logLevel]: sets the logging level (see http://casperjs.org/logging.html).</td>
+        <td>Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).</td>
     </tr>
     <tr>
         <td><code>direct</code></td>
@@ -113,8 +174,8 @@ You can also add in the ```<configuration>``` part several elements that will be
         <td>Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.</td>
     </tr>
     <tr>
-    	<td><code>engine</code></td>
-    	<td>CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine (phantomjs or slimerjs)</td>
+        <td><code>engine</code></td>
+        <td>CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine (phantomjs or slimerjs)</td>
     </tr>
 </table>
 
@@ -123,9 +184,10 @@ You can also add in the ```<configuration>``` part several elements that will be
 
 Here is a list of things that should be done to make this plugin awesome:
 
-- Set default values for some parameters (```tests.directory``` for example)
-- Manage sub-directories where files are included
-- Manage a list of excludes / includes for the tests to run
+- ~~Set default values for some parameters (```tests.directory``` for example)~~
+- ~~Manage sub-directories where files are included~~
+- ~~Manage a list of excludes / includes for the tests to run~~
+- Publish to Maven Central
 
 ## Issues / Enhancements
 

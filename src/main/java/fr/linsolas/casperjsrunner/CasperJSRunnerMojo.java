@@ -192,6 +192,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         if (StringUtils.isNotBlank(post)) {
             cmdLine.addArgument("--post=" + post);
         }
+        // Option --log-level, to set the log level
+        if (StringUtils.isNotBlank(logLevel)) {
+            cmdLine.addArgument("--log-level=" + logLevel);
+        }
         // Option --xunit, to export results in XML file
         if (StringUtils.isNotBlank(xUnit)) {
             cmdLine.addArgument("--xunit=" + xUnit);

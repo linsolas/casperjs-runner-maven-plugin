@@ -2,7 +2,7 @@ file = new File(basedir, 'build.log');
 assert file.exists();
 assert file.text.contains('casperjs-runner-maven-plugin');
 assert file.text.contains("Toolchains are ignored, 'casperRuntime' parameter is set to /opt/casperjs/bin/casperjs");
-assert !file.text.contains('No toolchain found, failling back to parameter');
+assert !file.text.contains('No toolchain found, falling back to parameter');
 assert file.text.contains('Execution of test test.js');
 assert file.text.contains('Execution of test test.coffee');
 assert file.text.contains('PASS 2 tests executed');

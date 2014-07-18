@@ -60,16 +60,19 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
 
-    @Parameter
-    private List<String> includesPatterns;
-
-    // Parameters for the CasperJS options
-
     @Parameter(property = "casperjs.include.javascript")
     private boolean includeJS = true;
 
     @Parameter(property = "casperjs.include.coffeescript")
     private boolean includeCS = true;
+
+    @Parameter
+    private Map<String, String> environmentVariables;
+
+    @Parameter(property = "casperjs.skip", defaultValue="${maven.test.skip}")
+    private boolean skip = false;
+
+    // Parameters for the CasperJS options
 
     @Parameter(property = "casperjs.pre")
     private String pre;
@@ -79,6 +82,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter(property = "casperjs.includes")
     private String includes;
+
+    @Parameter
+    private List<String> includesPatterns;
 
     @Parameter(property = "casperjs.xunit")
     private String xUnit;
@@ -97,12 +103,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter
     private List<String> arguments;
-
-    @Parameter
-    private Map<String, String> environmentVariables;
-
-    @Parameter
-    private boolean skip = false;
 
     // Injected components
 
@@ -236,12 +236,12 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
 
         if (casperRuntime == null) {
-            getLogger().debug("No toolchain found, failling back to parameter");
+            getLogger().debug("No toolchain found, falling back to parameter");
             casperRuntime = casperExecPath;
         }
 
         if (casperRuntime == null) {
-            getLogger().debug("No parameter specified, failling back to default 'casperjs'");
+            getLogger().debug("No parameter specified, falling back to default 'casperjs'");
             casperRuntime = "casperjs";
         }
     }

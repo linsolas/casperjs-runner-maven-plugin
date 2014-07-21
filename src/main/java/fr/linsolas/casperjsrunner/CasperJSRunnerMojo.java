@@ -143,10 +143,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
 
         retrieveVersion();
-        if (casperJsVersion.getMajorVersion() != 1 || casperJsVersion.getMinorVersion() < 1) {
-            throw new MojoFailureException("This version of the plugin only supports CasperJS 1.1+ executable (was "+casperJsVersion+")");
-        }
-
         if (verbose) {
             getLogger().info("CasperJS version: " + casperJsVersion);
         }

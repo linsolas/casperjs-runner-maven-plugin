@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.linsolas</groupId>
-  <artifactId>toolchain-overwrite</artifactId>
+  <artifactId>casperjs-1.0</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: toolchain-overwrite</name>
+  <name>CasperJS Runner :: CasperJS 1.0</name>
 
   <url>no-url</url>
 
@@ -43,7 +43,7 @@
         </executions>
         <configuration>
           <toolchains>
-            <casperjs><version>[1.1.0,)</version></casperjs>
+            <casperjs><version>1.0.4</version></casperjs>
           </toolchains>
         </configuration>
       </plugin>
@@ -61,7 +61,9 @@
           </execution>
         </executions>
         <configuration>
-          <casperExecPath>${casperjs-default-path}/casperjs</casperExecPath>
+          <environmentVariables>
+            <PATH>${phantomjs-for-casper-1.0-path}:${env.PATH}</PATH>
+          </environmentVariables>
         </configuration>
       </plugin>
     </plugins>

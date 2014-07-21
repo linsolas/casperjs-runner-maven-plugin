@@ -61,7 +61,7 @@
           </execution>
         </executions>
         <configuration>
-          <casperExecPath>/opt/casperjs/bin/casperjs</casperExecPath>
+          <casperExecPath>${casperjs-default-path}</casperExecPath>
         </configuration>
       </plugin>
     </plugins>

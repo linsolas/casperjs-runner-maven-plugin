@@ -23,6 +23,15 @@
 
 <settings>
 
+  <mirrors>
+    <mirror>
+      <id>it-mirror</id>
+      <name>Mirror for Integration Tests</name>
+      <url>file:///@localRepository@</url>
+      <mirrorOf>*</mirrorOf>
+    </mirror>
+  </mirrors>
+
   <profiles>
     <profile>
       <id>it-repo</id>

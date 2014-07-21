@@ -42,7 +42,7 @@
               <goal>test</goal>
             </goals>
             <configuration>
-              <test>hello.js</test>
+              <test>hello</test>
             </configuration>
           </execution>
         </executions>

@@ -6,6 +6,7 @@ import static java.util.Arrays.asList;
 import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScriptsFinder {
@@ -14,15 +15,20 @@ public class ScriptsFinder {
 
     private String specific;
 
-    private List<String> patterns;
+    private List<String> includes;
+    private List<String> excludes;
 
-    public ScriptsFinder(File baseDir, String specific, List<String> patterns) {
-        if (patterns == null || patterns.isEmpty()) {
-            throw new IllegalArgumentException("Patterns to search must be defined !");
+    public ScriptsFinder(File baseDir, String specific, List<String> includes, List<String> excludes) {
+        if (includes == null || includes.isEmpty()) {
+            throw new IllegalArgumentException("Include patterns to search must be defined !");
+        }
+        if (excludes == null) {
+            throw new IllegalArgumentException("Excludes patterns must not be null !");
         }
         this.baseDir = baseDir;
         this.specific = specific;
-        this.patterns = patterns;
+        this.includes = includes;
+        this.excludes = excludes;
     }
 
     public List<String> findScripts() {
@@ -32,9 +38,17 @@ public class ScriptsFinder {
         scanner.setCaseSensitive(false);
         scanner.setBasedir(baseDir);
         if (specific != null && !specific.isEmpty()) {
-            scanner.setIncludes(new String[] { specific });
+            List<String> temp = new ArrayList<String>();
+            if (specific.endsWith(".js") || specific.endsWith(".coffee")) {
+                temp.add("**/"+specific);
+            } else {
+                temp.add("**/"+specific+".js");
+                temp.add("**/"+specific+".coffee");
+            }
+            scanner.setIncludes(temp.toArray(new String[temp.size()]));
         } else {
-            scanner.setIncludes(patterns.toArray(new String[patterns.size()]));
+            scanner.setIncludes(includes.toArray(new String[includes.size()]));
+            scanner.setExcludes(excludes.toArray(new String[excludes.size()]));
         }
         scanner.scan();
 

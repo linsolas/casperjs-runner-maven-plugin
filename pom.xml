@@ -3,9 +3,9 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>fr.linsolas</groupId>
+    <groupId>com.github.linsolas</groupId>
     <artifactId>casperjs-runner-maven-plugin</artifactId>
-    <version>1.1-RC1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>CasperJS runner Maven plugin</name>
     <description>Runs JavaScript and/or CoffeScript test files on CasperJS instance</description>
     <packaging>maven-plugin</packaging>
@@ -22,6 +22,7 @@
     </prerequisites>
 
     <scm>
+        <connection>scm:git:git://github.com/linsolas/casperjs-runner-maven-plugin.git</connection>
         <url>https://github.com/linsolas/casperjs-runner-maven-plugin.git</url>
     </scm>
 
@@ -31,12 +32,29 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
-   </licenses>
+    </licenses>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>oss-sonatype</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>oss-sonatype</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+        </repository>
+    </distributionManagement>
+
+    <url>https://github.com/linsolas/casperjs-runner-maven-plugin</url>
 
     <developers>
         <developer>
             <id>linsolas</id>
             <name>Romain Linsolas</name>
+        </developer>
+        <developer>
+            <id>bguerin</id>
+            <name>Benoit Guerin</name>
         </developer>
     </developers>
 
@@ -118,32 +136,68 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <artifactId>maven-invoker-plugin</artifactId>
-                <version>1.9</version>
-                <configuration>
-                    <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-                    <settingsFile>src/it/settings.xml</settingsFile>
-                    <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
-                    <mergeUserSettings>true</mergeUserSettings>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>integration-test</id>
-                        <goals>
-                            <goal>install</goal>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <pomIncludes>
-                                <pomInclude>casperjs-runner/*/pom.xml</pomInclude>
-                            </pomIncludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
-    
+
+    <profiles>
+        <profile>
+            <id>it</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-invoker-plugin</artifactId>
+                        <version>1.9</version>
+                        <configuration>
+                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <settingsFile>src/it/settings.xml</settingsFile>
+                            <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+                            <mergeUserSettings>true</mergeUserSettings>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>install</goal>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <pomIncludes>
+                                        <pomInclude>casperjs-runner/*/pom.xml</pomInclude>
+                                    </pomIncludes>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.4</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
 

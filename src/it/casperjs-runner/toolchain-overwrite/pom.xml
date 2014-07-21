@@ -6,7 +6,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>fr.linsolas</groupId>
+  <groupId>com.github.linsolas</groupId>
   <artifactId>toolchain-overwrite</artifactId>
   <version>1.0</version>
 
@@ -24,7 +24,7 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>fr.linsolas</groupId>
+          <groupId>com.github.linsolas</groupId>
           <artifactId>casperjs-runner-maven-plugin</artifactId>
           <version>@pom.version@</version>
         </plugin>
@@ -49,7 +49,7 @@
       </plugin>
 
       <plugin>
-        <groupId>fr.linsolas</groupId>
+        <groupId>com.github.linsolas</groupId>
         <artifactId>casperjs-runner-maven-plugin</artifactId>
         <extensions>true</extensions>
         <executions>

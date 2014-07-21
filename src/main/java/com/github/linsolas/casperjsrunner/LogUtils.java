@@ -1,4 +1,4 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
 import org.apache.maven.plugin.logging.Log;
 

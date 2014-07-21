@@ -20,9 +20,9 @@ Add, in your ```<build><plugins>``` part of your ```pom.xml``` file the followin
 
 ```xml
     <plugin>
-        <groupId>fr.linsolas</groupId>
+        <groupId>com.github.linsolas</groupId>
         <artifactId>casperjs-runner-maven-plugin</artifactId>
-        <version>1.1-RC1</version>
+        <version>1.0.2-SNAPSHOT</version>
         <configuration>
             <!-- see below -->
         </configuration>

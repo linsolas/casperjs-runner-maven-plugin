@@ -1,6 +1,6 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
-import static fr.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
+import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

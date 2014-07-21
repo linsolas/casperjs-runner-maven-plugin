@@ -1,4 +1,4 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Arrays.asList;
@@ -13,7 +13,6 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 
 public class ScriptsFinderTest {
 

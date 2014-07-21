@@ -1,4 +1,4 @@
-package fr.linsolas.casperjsrunner.toolchain;
+package com.github.linsolas.casperjsrunner.toolchain;
 
 import org.apache.maven.toolchain.DefaultToolchain;
 import org.apache.maven.toolchain.model.ToolchainModel;

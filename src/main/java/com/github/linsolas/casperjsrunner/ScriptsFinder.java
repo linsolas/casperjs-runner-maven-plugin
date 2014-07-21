@@ -1,6 +1,6 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
-import static fr.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
 import static java.util.Arrays.asList;
 
 import org.codehaus.plexus.util.DirectoryScanner;

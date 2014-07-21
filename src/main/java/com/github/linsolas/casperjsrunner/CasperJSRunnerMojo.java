@@ -1,7 +1,7 @@
-package fr.linsolas.casperjsrunner;
+package com.github.linsolas.casperjsrunner;
 
-import static fr.linsolas.casperjsrunner.LogUtils.getLogger;
-import static fr.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
+import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,7 +27,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 
-import fr.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
+import com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance

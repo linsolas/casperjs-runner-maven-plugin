@@ -1,0 +1,47 @@
+  ------
+  Usage
+  ------
+
+Usage
+
+  Best practice is to define the version of this plugin that you want to use in either your <<<pom.xml>>>
+  or a parent <<<pom.xml>>>:
+
++---+
+<project>
+  [...]
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>${project.groupId}</groupId>
+          <artifactId>${project.artifactId}</artifactId>
+          <version>${project.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  [...]
+</project>
++---+
+
+  Then you can add the following in your build/plugins section of your <<<pom.xml>>>
+
++---+
+  <plugin>
+    <groupId>${project.groupId}</groupId>
+    <artifactId>${project.artifactId}</artifactId>
+    <configuration>
+      <!-- see below -->
+    </configuration>
+  </plugin>
++---+
+
+  For the configuration options, see the {{{./test-mojo.html} test MOJO description}}
+
+  This plugin can be invoked with the following command line, whereas your <<<pluginGroups>>> configuration is correct
+
++---+
+mvn casperjs-runner:test
++---+
+

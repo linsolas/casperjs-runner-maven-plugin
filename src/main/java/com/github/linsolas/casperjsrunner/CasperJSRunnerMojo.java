@@ -39,68 +39,166 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Parameters for the plugin
 
+    /**
+     * Complete path of the executable for CasperJS.
+     * <br/><b>Default value:</b>
+     * Found from <a href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a> named <b><i>casperjs</b></i>,
+     * then from this parameter,
+     * then from PATH with default value of <b>casperjs</b>
+     */
     @Parameter(property = "casperjs.executable")
     private String casperExecPath;
 
+    /**
+     * Directory where the tests to execute are stored.
+     * <br/>If <code>${tests.directory}/includes</code> and <code>${tests.directory}/scripts</code> directories exist,
+     * this is changed to <code>${tests.directory}/scripts</code> and all <code>*.js</code> files in <code>${tests.directory}/includes</code>
+     * will automatically be added to the CasperJS <code>--includes</code> list.
+     */
     @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/casperjs")
     private File testsDir;
 
+    /**
+     * Specify this parameter to run individual tests by file name, overriding the <code>testIncludes</code>/<code>testExcludes</code> parameters.
+     * Each pattern you specify here will be used to create an include pattern formatted like <code>**&#47;${test}.{js,coffee}</code>, so you can
+     * just type "-Dtest=MyTest" to run a single test called <code>foo/MyTest.js</code> or <code>foo/MyTest.coffee</code>.
+     */
     @Parameter(property = "casperjs.test")
     private String test;
 
+    /**
+     * A list of <code>&lt;testInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.
+     * <br/><b>Default value:</b> When not specified and when the test parameter is not specified, the default includes will be
+     * (javascript patterns will only be set if <code>includeJS</code> is <code>true</code>, and coffee patterns will only be set
+     * if <code>includeCS</code> is <code>true</code>)
+<br/><br/>
+<code>&lt;testIncludes&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**&#47;Test*.js&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*Test.js&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*TestCase.js&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**&#47;Test*.coffee&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*Test.coffee&lt;/testInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*TestCase.coffee&lt;/testInclude&gt;<br/>
+&lt;/testIncludes&gt;</code>
+     */
     @Parameter
     private List<String> testsIncludes;
 
+    /**
+     * A list of <code>&lt;testExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
+     */
     @Parameter
     private List<String> testsExcludes;
 
+    /**
+     * Do we ignore the tests failures. If yes, the plugin will not fail at the end if there was tests failures.
+     */
     @Parameter(property = "casperjs.ignoreTestFailures", defaultValue = "${maven.test.failure.ignore}")
     private boolean ignoreTestFailures = false;
 
+    /**
+     * Set the plugin to be verbose during its execution. It will ALSO impact the verbosity of the CasperJS execution (ie, setting
+     * the --verbose command line option).
+     */
     @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
 
+    /**
+     * A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.
+     */
     @Parameter(property = "casperjs.include.javascript")
     private boolean includeJS = true;
 
+    /**
+     * A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.
+     */
     @Parameter(property = "casperjs.include.coffeescript")
     private boolean includeCS = true;
 
+    /**
+     * Environment variables to set on the command line, instead of the default, inherited, ones.
+     */
     @Parameter
     private Map<String, String> environmentVariables;
 
+    /**
+     * Set this to <code>true</code> to bypass unit tests entirely.
+     */
     @Parameter(property = "casperjs.skip", defaultValue="${maven.test.skip}")
     private boolean skip = false;
 
     // Parameters for the CasperJS options
 
+    /**
+     * Set the value for the CasperJS option <code>--pre=[pre-test.js]</code>: will add the tests contained in pre-test.js
+     * before executing the test suite. If a <code>pre.js</code> file is found on the <code>${tests.directory}</code>, this
+     * option will be set automatically
+     */
     @Parameter(property = "casperjs.pre")
     private String pre;
 
+    /**
+     * Set the value for the CasperJS option <code>--post=[post-test.js]</code>: will add the tests contained in post-test.js
+     * after having executed the whole test suite. If a <code>post.js</code> file is found on the <code>${tests.directory}</code>,
+     * this option will be set automatically
+     */
     @Parameter(property = "casperjs.post")
     private String post;
 
+    /**
+     * Set the value for the CasperJS option <code>--includes=[foo.js,bar.js]</code>: will includes the foo.js and bar.js files
+     * before each test file execution.
+     */
     @Parameter(property = "casperjs.includes")
     private String includes;
 
+    /**
+     * A list of <code>&lt;includesPattern&gt;</code> elements specifying the files (by pattern) to set on the <code>--includes</code>
+     * option.<br/>When not specified and the <code>${tests.directory}/includes</code> directory exists, this will be set to 
+<br/><br/>
+<code>&lt;includesPatterns&gt;<br/>
+&nbsp;&nbsp;&lt;includesPattern&gt;${tests.directory}/includes/**&#47;*.js&lt;/includesPattern&gt;<br/>
+&lt;/includesPatterns&gt;</code>
+     */
     @Parameter
     private List<String> includesPatterns;
 
+    /**
+     * Set the value for the CasperJS option <code>--xunit=[filename]</code>: will export test suite results in the specified xUnit XML file.
+     * This can be either an absolute path, or a relative path which will be appended to <code>${project.build.directory}/casperjs/<code>.
+     * In both cases, the necessary directories to hold the xunit file will be created by the plugin.
+     */
     @Parameter(property = "casperjs.xunit")
     private String xunit;
 
+    /**
+     * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
+     */
     @Parameter(property = "casperjs.logLevel")
     private String logLevel;
 
+    /**
+     * Set the value for the CasperJS option --direct: will output log messages directly to the console.
+     */
     @Parameter(property = "casperjs.direct")
     private boolean direct = false;
 
+    /**
+     * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
+     */
     @Parameter(property = "casperjs.failFast")
     private boolean failFast = false;
 
+    /**
+     * CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine
+     * (phantomjs or slimerjs)
+     */
     @Parameter(property = "casperjs.engine")
     private String engine;
 
+    /**
+     * A list of <code>&lt;argument&gt;</code> to add to the casperjs command line.
+     */
     @Parameter
     private List<String> arguments;
 

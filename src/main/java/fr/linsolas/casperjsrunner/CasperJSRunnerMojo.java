@@ -233,7 +233,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             getLogger().debug("Using automatically found 'pre.js' file on " + testsDir.getName() + " directory as --pre");
             cmdLine.addArgument("--pre=" + new File(testsDir, "pre.js").getAbsolutePath());
         }
-        // Option --pre, to execute the scripts after the test suite
+        // Option --post, to execute the scripts after the test suite
         if (StringUtils.isNotBlank(post)) {
             cmdLine.addArgument("--post=" + post);
         } else if (new File(testsDir, "post.js").exists()) {

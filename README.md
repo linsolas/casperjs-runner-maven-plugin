@@ -5,7 +5,9 @@ This project aims to run [CasperJS](http://casperjs.org/) tests in a Maven build
 
 ## System requirements
 
-This plugin has been tested on an environment where PhantomJS (v**1.9.7**) and CasperJS (v**1.1.0-beta3**) where installed.
+This plugin has been tested on two environments :
+- PhantomJS (v **1.8.2**) and CasperJS (v **1.0.4**) where installed.
+- PhantomJS (v **1.9.7**) and CasperJS (v **1.1.0-beta3**) where installed.
 
 
 ## Build
@@ -36,36 +38,35 @@ The CasperJS Runner Maven plugin can be configured with the following options:
     <tr>
         <th>Name</th>
         <th>Description</th>
-        <th>Default value</th>
         <th>Mandatory</th>
         <th>User property (to set from command line)</th>
     </tr>
     <tr>
         <td><code>casperExecPath</code></td>
-        <td>Complete path of the executable for CasperJS.</td>
-        <td>Found from <a href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a> named <b><i>casperjs</b></i>, then from this parameter, then from PATH with default value of <b>casperjs</b></td>
+        <td>Complete path of the executable for CasperJS.
+        <br/><b>Default value:</b> Found from <a href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a> named <b><i>casperjs</b></i>, then from this parameter, then from PATH with default value of <b>casperjs</b></td>
         <td>No</td>
         <td><code>casperjs.executable</code></td>
     </tr>
     <tr>
         <td><code>testsDir</code></td>
-        <td>Directory where the tests to execute are stored.</td>
-        <td><code>${basedir}/src/test/casperjs</code>.<br/>
+        <td>Directory where the tests to execute are stored.
+        <br/><b>Default value:</b> <code>${basedir}/src/test/casperjs</code>.<br/>
         If <code>${tests.directory}/includes</code> and <code>${tests.directory}/scripts</code> directories exist, this is changed to <code>${tests.directory}/scripts</code> and all <code>*.js</code> files in <code>${tests.directory}/includes</code> will automatically be added to the CasperJS <code>--includes</code> list.</td>
         <td>No</td>
         <td><code>tests.directory</code></td>
     </tr>
     <tr>
         <td><code>test</code></td>
-        <td>Specify this parameter to run individual tests by file name, overriding the <code>testIncludes</code>/<code>testExcludes</code> parameters. Each pattern you specify here will be used to create an include pattern formatted like <code>**/${test}.{js,coffee}</code>, so you can just type "-Dtest=MyTest" to run a single test called <code>foo/MyTest.js</code> or <code>foo/MyTest.coffee</code>.</td>
-        <td></td>
+        <td>Specify this parameter to run individual tests by file name, overriding the <code>testIncludes</code>/<code>testExcludes</code> parameters. Each pattern you specify here will be used to create an include pattern formatted like <code>**/${test}.{js,coffee}</code>, so you can just type "-Dtest=MyTest" to run a single test called <code>foo/MyTest.js</code> or <code>foo/MyTest.coffee</code>.
+        <br/><b>Default value:</b> none.</td>
         <td>No</td>
         <td><code>casperjs.test</code></td>
     </tr>
     <tr>
         <td><code>testIncludes</code></td>
-        <td>A list of <code>&lt;testInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.</td>
-        <td>When not specified and when the test parameter is not specified, the default includes will be (javascript patterns will only be set if <code>includeJS</code> is <code>true</code>, and coffee patterns will only be set if <code>includeCS</code> is <code>true</code>)
+        <td>A list of <code>&lt;testInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.
+        <br/><b>Default value:</b> When not specified and when the test parameter is not specified, the default includes will be (javascript patterns will only be set if <code>includeJS</code> is <code>true</code>, and coffee patterns will only be set if <code>includeCS</code> is <code>true</code>)
 <br/><br/>
 <code>&lt;testIncludes&gt;<br/>
 &nbsp;&nbsp;&lt;testInclude&gt;**/Test*.js&lt;/testInclude&gt;<br/>
@@ -80,50 +81,50 @@ The CasperJS Runner Maven plugin can be configured with the following options:
     </tr>
     <tr>
         <td><code>testExcludes</code></td>
-        <td>A list of <code>&lt;testExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.</td>
-        <td></td>
+        <td>A list of <code>&lt;testExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
+        <br/><b>Default value:</b> none.</td>
         <td>No</td>
         <td></td>
     </tr>
     <tr>
         <td><code>ignoreTestFailures</code></td>
-        <td>Do we ignore the tests failures. If yes, the plugin will not fail at the end if there was tests failures.</td>
-        <td><code>${maven.test.failure.ignore}</code>, falling back to false</td>
+        <td>Do we ignore the tests failures. If yes, the plugin will not fail at the end if there was tests failures.
+        <br/><b>Default value:</b> <code>${maven.test.failure.ignore}</code>, falling back to false</td>
         <td>No</td>
         <td><code>casperjs.ignoreTestFailures</code></td>
     </tr>
     <tr>
         <td><code>includeJS</code></td>
-        <td>A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.</td>
-        <td>true</td>
+        <td>A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.
+        <br/><b>Default value:</b> true</td>
         <td>No</td>
         <td><code>casperjs.include.javascript</code></td>
     </tr>
     <tr>
         <td><code>includeCS</code></td>
-        <td>A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.</td>
-        <td>true</td>
+        <td>A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.
+        <br/><b>Default value:</b> true</td>
         <td>No</td>
         <td><code>casperjs.include.coffeescript</code></td>
     </tr>
     <tr>
         <td><code>environmentVariables</code></td>
-        <td>Environment variables to set on the command line, instead of the default, inherited, ones.</td>
-        <td></td>
+        <td>Environment variables to set on the command line, instead of the default, inherited, ones.
+        <br/><b>Default value:</b> none.</td>
         <td>No</td>
         <td></td>
     </tr>
     <tr>
         <td><code>skip</code></td>
-        <td>Set this to <code>true</code> to bypass unit tests entirely.</td>
-        <td><code>${maven.test.skip}</code>, falling back to false</td>
+        <td>Set this to <code>true</code> to bypass unit tests entirely.
+        <br/><b>Default value:</b> <code>${maven.test.skip}</code>, falling back to false</td>
         <td>No</td>
         <td><code>casperjs.skip</code></td>
     </tr>
     <tr>
         <td><code>verbose</code></td>
-        <td>Set the plugin to be verbose during its execution. It will ALSO impact the verbosity of the CasperJS execution (ie, setting the --verbose command line option).</td>
-        <td><code>${maven.verbose}</code>, falling back to false</td>
+        <td>Set the plugin to be verbose during its execution. It will ALSO impact the verbosity of the CasperJS execution (ie, setting the --verbose command line option).
+        <br/><b>Default value:</b> <code>${maven.verbose}</code>, falling back to false</td>
         <td>No</td>
         <td><code>casperjs.verbose</code></td>
     </tr>

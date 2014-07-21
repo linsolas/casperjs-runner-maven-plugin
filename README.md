@@ -162,7 +162,7 @@ You can also add in the ```<configuration>``` part several elements that will be
     </tr>
     <tr>
         <td><code>xunit</code></td>
-        <td>Set the value for the CasperJS option <code>--xunit=[filename]</code>: will export test suite results in the specified xUnit XML file.</td>
+        <td>Set the value for the CasperJS option <code>--xunit=[filename]</code>: will export test suite results in the specified xUnit XML file. This can be either an absolute path, or a relative path which will be appended to <code>${project.build.directory}/casperjs/<code>. In both cases, the necessary directories to hold the xunit file will be created by the plugin.</td>
     </tr>
     <tr>
         <td><code>logLevel</code></td>

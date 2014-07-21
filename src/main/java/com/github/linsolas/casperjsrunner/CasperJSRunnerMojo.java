@@ -106,6 +106,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Injected components
 
+    @Parameter(defaultValue="${project.build.directory}")
+    private File targetDir;
+
     @Parameter(defaultValue="${session}")
     private MavenSession session;
 
@@ -169,6 +172,16 @@ public class CasperJSRunnerMojo extends AbstractMojo {
                 includesDir = defaultIncludesDir;
                 includesPatterns.add("**/*.js");
             }
+        }
+
+        if (StringUtils.isNotBlank(xunit)) {
+            if (!xunit.startsWith(targetDir.getAbsolutePath())) {
+                getLogger().debug("'xunit' specified as relative path, altering its value");
+                xunit = targetDir.getAbsolutePath() + File.separator + "casperjs" + File.separator + xunit;
+            }
+
+            getLogger().debug("creating directories to hold xunit file");
+            new File(xunit).getParentFile().mkdirs();
         }
     }
 

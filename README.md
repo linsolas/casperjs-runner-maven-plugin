@@ -3,6 +3,18 @@ casperjs-runner-maven-plugin
 
 This project aims to run [CasperJS](http://casperjs.org/) tests in a Maven build.
 
+Now available on Maven central.
+Add in your pom.xml:
+
+```
+<plugin>
+    <groupId>com.github.linsolas</groupId>
+    <artifactId>casperjs-runner-maven-plugin</artifactId>
+    <version>1.0.1</version>
+    <configuration></configuration>
+</plugin>
+```
+
 ## System requirements
 
 This plugin has been tested on two environments :

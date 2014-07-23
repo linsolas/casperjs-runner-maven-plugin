@@ -7,10 +7,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.linsolas</groupId>
-  <artifactId>xunit</artifactId>
+  <artifactId>xmlReports</artifactId>
   <version>1.0</version>
 
-  <name>CasperJS Runner :: xunit</name>
+  <name>CasperJS Runner :: XML reports</name>
 
   <url>no-url</url>
 
@@ -44,7 +44,7 @@
           </execution>
         </executions>
         <configuration>
-          <xunit>${project.build.directory}/casperjsResults.xml</xunit>
+          <enableXmlReport>true</enableXmlReport>
         </configuration>
       </plugin>
     </plugins>

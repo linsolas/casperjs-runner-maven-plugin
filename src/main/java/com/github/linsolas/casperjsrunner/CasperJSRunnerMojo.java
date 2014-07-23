@@ -166,12 +166,12 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private List<String> includesPatterns;
 
     /**
-     * Set the value for the CasperJS option <code>--xunit=[filename]</code>: will export test suite results in the specified xUnit XML file.
-     * This can be either an absolute path, or a relative path which will be appended to <code>${project.build.directory}/casperjs/<code>.
-     * In both cases, the necessary directories to hold the xunit file will be created by the plugin.
+     * Should CasperJS generates XML report, through the <code>--xunit=[filename]</code> option.
+     * If <code>true</code>, such a report will be generated in the <code>${project.build.directory}/casperjs/<code> directory,
+     * with a name of <code>TEST-&lt;test filename&gt;.xml</code>.
      */
-    @Parameter(property = "casperjs.xunit")
-    private String xunit;
+    @Parameter(property = "casperjs.enableXmlReport", defaultValue = "false")
+    private boolean enableXmlReport;
 
     /**
      * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
@@ -209,7 +209,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * The directory where output files (like xUnit reports) will be stored
      */
-    @Parameter(defaultValue="${project.build.directory}")
+    @Parameter(defaultValue="${project.build.directory}/casperjs")
     private File targetDir;
 
     /**
@@ -295,14 +295,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             }
         }
 
-        if (StringUtils.isNotBlank(xunit)) {
-            if (!xunit.startsWith(targetDir.getAbsolutePath())) {
-                getLogger().debug("'xunit' specified as relative path, altering its value");
-                xunit = targetDir.getAbsolutePath() + File.separator + "casperjs" + File.separator + xunit;
-            }
-
-            getLogger().debug("creating directories to hold xunit file");
-            new File(xunit).getParentFile().mkdirs();
+        if (enableXmlReport) {
+            getLogger().debug("creating directories to hold xunit file(s)");
+            targetDir.mkdirs();
         }
     }
 
@@ -371,8 +366,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             cmdLine.addArgument("--post=" + new File(testsDir, "post.js").getAbsolutePath());
         }
         // Option --xunit, to export results in XML file
-        if (StringUtils.isNotBlank(xunit)) {
-            cmdLine.addArgument("--xunit=" + xunit);
+        if (enableXmlReport) {
+            cmdLine.addArgument("--xunit=" + new File(targetDir, "TEST-"+f.getName().replaceAll("\\.", "_") + ".xml"));
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found

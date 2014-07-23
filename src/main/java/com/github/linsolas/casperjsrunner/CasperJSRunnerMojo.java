@@ -446,7 +446,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private int executeCommand(CommandLine line) {
         getLogger().debug("Execute CasperJS command [" + line + "], with env: " + environmentVariables);
         try {
-            return new DefaultExecutor().execute(line, environmentVariables);
+            DefaultExecutor executor = new DefaultExecutor();
+            executor.setExitValues(new int[] {0,1});
+            return executor.execute(line, environmentVariables);
         } catch (final IOException e) {
             if (verbose) {
                 getLogger().error("Could not run CasperJS command", e);

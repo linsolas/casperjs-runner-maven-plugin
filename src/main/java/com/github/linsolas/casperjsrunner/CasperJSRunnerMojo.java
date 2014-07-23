@@ -33,8 +33,8 @@ import com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
- * User: Romain Linsolas
- * Date: 09/04/13
+ * @author Romain Linsolas
+ * @since 09/04/13
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe = true)
 public class CasperJSRunnerMojo extends AbstractMojo {
@@ -108,14 +108,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.
      */
-    @Parameter(property = "casperjs.include.javascript")
-    private boolean includeJS = true;
+    @Parameter(property = "casperjs.include.javascript", defaultValue="true")
+    private boolean includeJS;
 
     /**
      * A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.
      */
-    @Parameter(property = "casperjs.include.coffeescript")
-    private boolean includeCS = true;
+    @Parameter(property = "casperjs.include.coffeescript", defaultValue="true")
+    private boolean includeCS;
 
     /**
      * Environment variables to set on the command line, instead of the default, inherited, ones.
@@ -166,12 +166,12 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private List<String> includesPatterns;
 
     /**
-     * Set the value for the CasperJS option <code>--xunit=[filename]</code>: will export test suite results in the specified xUnit XML file.
-     * This can be either an absolute path, or a relative path which will be appended to <code>${project.build.directory}/casperjs/<code>.
-     * In both cases, the necessary directories to hold the xunit file will be created by the plugin.
+     * Should CasperJS generates XML report, through the <code>--xunit=[filename]</code> option.
+     * If <code>true</code>, such a report will be generated in the <code>${project.build.directory}/casperjs/<code> directory,
+     * with a name of <code>TEST-&lt;test filename&gt;.xml</code>.
      */
-    @Parameter(property = "casperjs.xunit")
-    private String xunit;
+    @Parameter(property = "casperjs.enableXmlReport", defaultValue = "false")
+    private boolean enableXmlReport;
 
     /**
      * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
@@ -182,14 +182,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * Set the value for the CasperJS option --direct: will output log messages directly to the console.
      */
-    @Parameter(property = "casperjs.direct")
-    private boolean direct = false;
+    @Parameter(property = "casperjs.direct", defaultValue = "false")
+    private boolean direct;
 
     /**
      * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
      */
-    @Parameter(property = "casperjs.failFast")
-    private boolean failFast = false;
+    @Parameter(property = "casperjs.failFast", defaultValue = "false")
+    private boolean failFast;
 
     /**
      * CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine
@@ -206,21 +206,42 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Injected components
 
-    @Parameter(defaultValue="${project.build.directory}")
+    /**
+     * The directory where output files (like xUnit reports) will be stored
+     */
+    @Parameter(defaultValue="${project.build.directory}/casperjs")
     private File targetDir;
 
+    /**
+     * The current maven session, used by the ToolChainManager
+     */
     @Parameter(defaultValue="${session}")
     private MavenSession session;
 
+    /**
+     * ToolChainManager, used to retrieve the CasperJS runtime path from user's configured toolchains
+     */
     @Component
     private ToolchainManager toolchainManager;
 
+    /**
+     * The CasperJS runtime path that we will launch
+     */
     private String casperRuntime;
 
+    /**
+     * The CasperJS runtime version
+     */
     private DefaultArtifactVersion casperJsVersion;
 
+    /**
+     * The directory containing the scripts to include while launching tests
+     */
     private File includesDir;
 
+    /**
+     * The directory containing the tests to launch
+     */
     private File scriptsDir;
 
     @Override
@@ -274,14 +295,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             }
         }
 
-        if (StringUtils.isNotBlank(xunit)) {
-            if (!xunit.startsWith(targetDir.getAbsolutePath())) {
-                getLogger().debug("'xunit' specified as relative path, altering its value");
-                xunit = targetDir.getAbsolutePath() + File.separator + "casperjs" + File.separator + xunit;
-            }
-
-            getLogger().debug("creating directories to hold xunit file");
-            new File(xunit).getParentFile().mkdirs();
+        if (enableXmlReport) {
+            getLogger().debug("creating directories to hold xunit file(s)");
+            targetDir.mkdirs();
         }
     }
 
@@ -350,8 +366,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             cmdLine.addArgument("--post=" + new File(testsDir, "post.js").getAbsolutePath());
         }
         // Option --xunit, to export results in XML file
-        if (StringUtils.isNotBlank(xunit)) {
-            cmdLine.addArgument("--xunit=" + xunit);
+        if (enableXmlReport) {
+            cmdLine.addArgument("--xunit=" + new File(targetDir, "TEST-"+f.getName().replaceAll("\\.", "_") + ".xml"));
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found

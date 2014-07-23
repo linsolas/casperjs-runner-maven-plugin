@@ -248,8 +248,7 @@
       
 <p><b>Description</b>:</p>
       
-<div>Runs JavaScript and/or CoffeScript test files on CasperJS instance
-User: Romain Linsolas Date: 09/04/13</div>
+<div>Runs JavaScript and/or CoffeScript test files on CasperJS instance</div>
       
 <p><b>Attributes</b>:</p>
       
@@ -258,6 +257,8 @@ User: Romain Linsolas Date: 09/04/13</div>
 <li>Requires a Maven project to be executed.</li>
         
 <li>The goal is thread-safe and supports parallel builds.</li>
+        
+<li>Since version: <tt>09/04/13</tt>.</li>
         
 <li>Binds by default to the <a class="externalLink" href="http://maven.apache.org/ref/current/maven-core/lifecycles.html">lifecycle phase</a>: <tt>test</tt>.</li>
       </ul>
@@ -284,7 +285,7 @@ User: Romain Linsolas Date: 09/04/13</div>
             
 <td><tt>List</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>A list of <tt>&lt;argument&gt;</tt> to add to the casperjs
 command line.<br /></td>
@@ -296,7 +297,7 @@ command line.<br /></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Complete path of the executable for CasperJS. <br />
 <b>Default value:</b> Found from <a class="externalLink" href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a>
@@ -310,105 +311,120 @@ PATH with default value of <b>casperjs</b><br /><b>User property is</b>: <tt>cas
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the value for the CasperJS option --direct: will output log
-messages directly to the console.<br /><b>User property is</b>: <tt>casperjs.direct</tt>.</td>
+messages directly to the console.<br /><b>Default value is</b>: <tt>false</tt>.<br /><b>User property is</b>: <tt>casperjs.direct</tt>.</td>
           </tr>
           
 <tr class="a">
+            
+<td><b><a href="#enableXmlReport">enableXmlReport</a></b></td>
+            
+<td><tt>boolean</tt></td>
+            
+<td><tt>09/04/13</tt></td>
+            
+<td>Should CasperJS generates XML report, through the
+<tt>--xunit=[filename]</tt> option. If <tt>true</tt>, such
+a report will be generated in the
+<tt>${project.build.directory}/casperjs/</tt> directory, with a
+name of <tt>TEST-&lt;test filename&gt;.xml</tt>.<br /><b>Default value is</b>: <tt>false</tt>.<br /><b>User property is</b>: <tt>casperjs.enableXmlReport</tt>.</td>
+          </tr>
+          
+<tr class="b">
             
 <td><b><a href="#engine">engine</a></b></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>CasperJS 1.1 and above<br />
 Set the for the CasperJS option <tt>--engine=[engine]</tt>:
 will change the rendering engine (phantomjs or slimerjs)<br /><b>User property is</b>: <tt>casperjs.engine</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#environmentVariables">environmentVariables</a></b></td>
             
 <td><tt>Map</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Environment variables to set on the command line, instead of the
 default, inherited, ones.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#failFast">failFast</a></b></td>
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the value for the CasperJS option --fail-fast: will terminate
-the current test suite as soon as a first failure is encountered.<br /><b>User property is</b>: <tt>casperjs.failFast</tt>.</td>
+the current test suite as soon as a first failure is encountered.<br /><b>Default value is</b>: <tt>false</tt>.<br /><b>User property is</b>: <tt>casperjs.failFast</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#ignoreTestFailures">ignoreTestFailures</a></b></td>
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Do we ignore the tests failures. If yes, the plugin will not fail
 at the end if there was tests failures.<br /><b>Default value is</b>: <tt>${maven.test.failure.ignore}</tt>.<br /><b>User property is</b>: <tt>casperjs.ignoreTestFailures</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#includeCS">includeCS</a></b></td>
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>A flag to indicate if the *.coffee found in
-<tt>tests.directory</tt> should be executed.<br /><b>User property is</b>: <tt>casperjs.include.coffeescript</tt>.</td>
+<tt>tests.directory</tt> should be executed.<br /><b>Default value is</b>: <tt>true</tt>.<br /><b>User property is</b>: <tt>casperjs.include.coffeescript</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#includeJS">includeJS</a></b></td>
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>A flag to indicate if the *.js found in
-<tt>tests.directory</tt> should be executed.<br /><b>User property is</b>: <tt>casperjs.include.javascript</tt>.</td>
+<tt>tests.directory</tt> should be executed.<br /><b>Default value is</b>: <tt>true</tt>.<br /><b>User property is</b>: <tt>casperjs.include.javascript</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#includes">includes</a></b></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the value for the CasperJS option
 <tt>--includes=[foo.js,bar.js]</tt>: will includes the foo.js
 and bar.js files before each test file execution.<br /><b>User property is</b>: <tt>casperjs.includes</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#includesPatterns">includesPatterns</a></b></td>
             
 <td><tt>List</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>A list of <tt>&lt;includesPattern&gt;</tt> elements specifying
 the files (by pattern) to set on the <tt>--includes</tt>
@@ -421,26 +437,26 @@ directory exists, this will be set to <br />
 &lt;/includesPatterns&gt;</tt><br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#logLevel">logLevel</a></b></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the value for the CasperJS option
 <tt>--log-level=[logLevel]</tt>: sets the logging level (see
 http://casperjs.org/logging.html).<br /><b>User property is</b>: <tt>casperjs.logLevel</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#post">post</a></b></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the value for the CasperJS option
 <tt>--post=[post-test.js]</tt>: will add the tests contained in
@@ -450,13 +466,13 @@ post-test.js after having executed the whole test suite. If a
 automatically<br /><b>User property is</b>: <tt>casperjs.post</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#pre">pre</a></b></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the value for the CasperJS option
 <tt>--pre=[pre-test.js]</tt>: will add the tests contained in
@@ -466,46 +482,47 @@ pre-test.js before executing the test suite. If a
 automatically<br /><b>User property is</b>: <tt>casperjs.pre</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#session">session</a></b></td>
             
 <td><tt>MavenSession</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
-<td>(no description)<br /><b>Default value is</b>: <tt>${session}</tt>.<br /></td>
+<td>The current maven session, used by the ToolChainManager<br /><b>Default value is</b>: <tt>${session}</tt>.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#skip">skip</a></b></td>
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set this to <tt>true</tt> to bypass unit tests entirely.<br /><b>Default value is</b>: <tt>${maven.test.skip}</tt>.<br /><b>User property is</b>: <tt>casperjs.skip</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#targetDir">targetDir</a></b></td>
             
 <td><tt>File</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
-<td>(no description)<br /><b>Default value is</b>: <tt>${project.build.directory}</tt>.<br /></td>
+<td>The directory where output files (like xUnit reports) will be
+stored<br /><b>Default value is</b>: <tt>${project.build.directory}/casperjs</tt>.<br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#test">test</a></b></td>
             
 <td><tt>String</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Specify this parameter to run individual tests by file name,
 overriding the <tt>testIncludes</tt>/<tt>testExcludes</tt>
@@ -515,13 +532,13 @@ so you can just type &quot;-Dtest=MyTest&quot; to run a single test called
 <tt>foo/MyTest.js</tt> or <tt>foo/MyTest.coffee</tt>.<br /><b>User property is</b>: <tt>casperjs.test</tt>.</td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#testsDir">testsDir</a></b></td>
             
 <td><tt>File</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Directory where the tests to execute are stored. <br />
 If <tt>${tests.directory}/includes</tt> and
@@ -532,25 +549,25 @@ will automatically be added to the CasperJS <tt>--includes</tt>
 list.<br /><b>Default value is</b>: <tt>${basedir}/src/test/casperjs</tt>.<br /><b>User property is</b>: <tt>casperjs.tests.directory</tt>.</td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#testsExcludes">testsExcludes</a></b></td>
             
 <td><tt>List</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>A list of <tt>&lt;testExclude&gt;</tt> elements specifying the
 tests (by pattern) that should be excluded in testing.<br /></td>
           </tr>
           
-<tr class="b">
+<tr class="a">
             
 <td><b><a href="#testsIncludes">testsIncludes</a></b></td>
             
 <td><tt>List</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>A list of <tt>&lt;testInclude&gt;</tt> elements specifying the
 tests (by pattern) that should be included in testing. <br />
@@ -570,34 +587,17 @@ parameter is not specified, the default includes will be
 &lt;/testIncludes&gt;</tt><br /></td>
           </tr>
           
-<tr class="a">
+<tr class="b">
             
 <td><b><a href="#verbose">verbose</a></b></td>
             
 <td><tt>boolean</tt></td>
             
-<td><tt>-</tt></td>
+<td><tt>09/04/13</tt></td>
             
 <td>Set the plugin to be verbose during its execution. It will ALSO
 impact the verbosity of the CasperJS execution (ie, setting the
 --verbose command line option).<br /><b>Default value is</b>: <tt>${maven.verbose}</tt>.<br /><b>User property is</b>: <tt>casperjs.verbose</tt>.</td>
-          </tr>
-          
-<tr class="b">
-            
-<td><b><a href="#xunit">xunit</a></b></td>
-            
-<td><tt>String</tt></td>
-            
-<td><tt>-</tt></td>
-            
-<td>Set the value for the CasperJS option
-<tt>--xunit=[filename]</tt>: will export test suite results in
-the specified xUnit XML file. This can be either an absolute path,
-or a relative path which will be appended to
-<tt>${project.build.directory}/casperjs/</tt>. In both cases,
-the necessary directories to hold the xunit file will be created by
-the plugin.<br /><b>User property is</b>: <tt>casperjs.xunit</tt>.</td>
           </tr>
         </table>
       </div>
@@ -614,6 +614,8 @@ command line.</div>
           
 <li><b>Type</b>: <tt>java.util.List</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
         </ul><hr />
 <p><b><a name="casperExecPath">casperExecPath</a>:</b></p>
@@ -626,6 +628,8 @@ PATH with default value of <b>casperjs</b></div>
 <ul>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -640,9 +644,33 @@ messages directly to the console.</div>
           
 <li><b>Type</b>: <tt>boolean</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.direct</tt></li>
+          
+<li><b>Default</b>: <tt>false</tt></li>
+        </ul><hr />
+<p><b><a name="enableXmlReport">enableXmlReport</a>:</b></p>
+        
+<div>Should CasperJS generates XML report, through the
+<tt>--xunit=[filename]</tt> option. If <tt>true</tt>, such
+a report will be generated in the
+<tt>${project.build.directory}/casperjs/</tt> directory, with a
+name of <tt>TEST-&lt;test filename&gt;.xml</tt>.</div>
+        
+<ul>
+          
+<li><b>Type</b>: <tt>boolean</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
+<li><b>Required</b>: <tt>No</tt></li>
+          
+<li><b>User Property</b>: <tt>casperjs.enableXmlReport</tt></li>
+          
+<li><b>Default</b>: <tt>false</tt></li>
         </ul><hr />
 <p><b><a name="engine">engine</a>:</b></p>
         
@@ -653,6 +681,8 @@ will change the rendering engine (phantomjs or slimerjs)</div>
 <ul>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -667,6 +697,8 @@ default, inherited, ones.</div>
           
 <li><b>Type</b>: <tt>java.util.Map</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
         </ul><hr />
 <p><b><a name="failFast">failFast</a>:</b></p>
@@ -678,9 +710,13 @@ the current test suite as soon as a first failure is encountered.</div>
           
 <li><b>Type</b>: <tt>boolean</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.failFast</tt></li>
+          
+<li><b>Default</b>: <tt>false</tt></li>
         </ul><hr />
 <p><b><a name="ignoreTestFailures">ignoreTestFailures</a>:</b></p>
         
@@ -690,6 +726,8 @@ at the end if there was tests failures.</div>
 <ul>
           
 <li><b>Type</b>: <tt>boolean</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -706,9 +744,13 @@ at the end if there was tests failures.</div>
           
 <li><b>Type</b>: <tt>boolean</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.include.coffeescript</tt></li>
+          
+<li><b>Default</b>: <tt>true</tt></li>
         </ul><hr />
 <p><b><a name="includeJS">includeJS</a>:</b></p>
         
@@ -719,9 +761,13 @@ at the end if there was tests failures.</div>
           
 <li><b>Type</b>: <tt>boolean</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.include.javascript</tt></li>
+          
+<li><b>Default</b>: <tt>true</tt></li>
         </ul><hr />
 <p><b><a name="includes">includes</a>:</b></p>
         
@@ -732,6 +778,8 @@ and bar.js files before each test file execution.</div>
 <ul>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -753,6 +801,8 @@ directory exists, this will be set to <br />
           
 <li><b>Type</b>: <tt>java.util.List</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
         </ul><hr />
 <p><b><a name="logLevel">logLevel</a>:</b></p>
@@ -764,6 +814,8 @@ http://casperjs.org/logging.html).</div>
 <ul>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -782,6 +834,8 @@ automatically</div>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.post</tt></li>
@@ -799,17 +853,21 @@ automatically</div>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.pre</tt></li>
         </ul><hr />
 <p><b><a name="session">session</a>:</b></p>
         
-<div>(no description)</div>
+<div>The current maven session, used by the ToolChainManager</div>
         
 <ul>
           
 <li><b>Type</b>: <tt>org.apache.maven.execution.MavenSession</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -823,6 +881,8 @@ automatically</div>
           
 <li><b>Type</b>: <tt>boolean</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.skip</tt></li>
@@ -831,15 +891,18 @@ automatically</div>
         </ul><hr />
 <p><b><a name="targetDir">targetDir</a>:</b></p>
         
-<div>(no description)</div>
+<div>The directory where output files (like xUnit reports) will be
+stored</div>
         
 <ul>
           
 <li><b>Type</b>: <tt>java.io.File</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
-<li><b>Default</b>: <tt>${project.build.directory}</tt></li>
+<li><b>Default</b>: <tt>${project.build.directory}/casperjs</tt></li>
         </ul><hr />
 <p><b><a name="test">test</a>:</b></p>
         
@@ -853,6 +916,8 @@ so you can just type &quot;-Dtest=MyTest&quot; to run a single test called
 <ul>
           
 <li><b>Type</b>: <tt>java.lang.String</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
           
@@ -872,6 +937,8 @@ list.</div>
           
 <li><b>Type</b>: <tt>java.io.File</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.tests.directory</tt></li>
@@ -886,6 +953,8 @@ tests (by pattern) that should be excluded in testing.</div>
 <ul>
           
 <li><b>Type</b>: <tt>java.util.List</tt></li>
+          
+<li><b>Since</b>: <tt>09/04/13</tt></li>
           
 <li><b>Required</b>: <tt>No</tt></li>
         </ul><hr />
@@ -912,6 +981,8 @@ parameter is not specified, the default includes will be
           
 <li><b>Type</b>: <tt>java.util.List</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
         </ul><hr />
 <p><b><a name="verbose">verbose</a>:</b></p>
@@ -924,29 +995,13 @@ impact the verbosity of the CasperJS execution (ie, setting the
           
 <li><b>Type</b>: <tt>boolean</tt></li>
           
+<li><b>Since</b>: <tt>09/04/13</tt></li>
+          
 <li><b>Required</b>: <tt>No</tt></li>
           
 <li><b>User Property</b>: <tt>casperjs.verbose</tt></li>
           
 <li><b>Default</b>: <tt>${maven.verbose}</tt></li>
-        </ul><hr />
-<p><b><a name="xunit">xunit</a>:</b></p>
-        
-<div>Set the value for the CasperJS option
-<tt>--xunit=[filename]</tt>: will export test suite results in
-the specified xUnit XML file. This can be either an absolute path,
-or a relative path which will be appended to
-<tt>${project.build.directory}/casperjs/</tt>. In both cases,
-the necessary directories to hold the xunit file will be created by
-the plugin.</div>
-        
-<ul>
-          
-<li><b>Type</b>: <tt>java.lang.String</tt></li>
-          
-<li><b>Required</b>: <tt>No</tt></li>
-          
-<li><b>User Property</b>: <tt>casperjs.xunit</tt></li>
         </ul>
       </div>
     </div>

@@ -33,8 +33,8 @@ import com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
- * User: Romain Linsolas
- * Date: 09/04/13
+ * @author Romain Linsolas
+ * @since 09/04/13
  */
 @Mojo(name = "test", defaultPhase = LifecyclePhase.TEST, threadSafe = true)
 public class CasperJSRunnerMojo extends AbstractMojo {
@@ -108,14 +108,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.
      */
-    @Parameter(property = "casperjs.include.javascript")
-    private boolean includeJS = true;
+    @Parameter(property = "casperjs.include.javascript", defaultValue="true")
+    private boolean includeJS;
 
     /**
      * A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.
      */
-    @Parameter(property = "casperjs.include.coffeescript")
-    private boolean includeCS = true;
+    @Parameter(property = "casperjs.include.coffeescript", defaultValue="true")
+    private boolean includeCS;
 
     /**
      * Environment variables to set on the command line, instead of the default, inherited, ones.
@@ -182,14 +182,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * Set the value for the CasperJS option --direct: will output log messages directly to the console.
      */
-    @Parameter(property = "casperjs.direct")
-    private boolean direct = false;
+    @Parameter(property = "casperjs.direct", defaultValue = "false")
+    private boolean direct;
 
     /**
      * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
      */
-    @Parameter(property = "casperjs.failFast")
-    private boolean failFast = false;
+    @Parameter(property = "casperjs.failFast", defaultValue = "false")
+    private boolean failFast;
 
     /**
      * CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine
@@ -206,21 +206,42 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     // Injected components
 
+    /**
+     * The directory where output files (like xUnit reports) will be stored
+     */
     @Parameter(defaultValue="${project.build.directory}")
     private File targetDir;
 
+    /**
+     * The current maven session, used by the ToolChainManager
+     */
     @Parameter(defaultValue="${session}")
     private MavenSession session;
 
+    /**
+     * ToolChainManager, used to retrieve the CasperJS runtime path from user's configured toolchains
+     */
     @Component
     private ToolchainManager toolchainManager;
 
+    /**
+     * The CasperJS runtime path that we will launch
+     */
     private String casperRuntime;
 
+    /**
+     * The CasperJS runtime version
+     */
     private DefaultArtifactVersion casperJsVersion;
 
+    /**
+     * The directory containing the scripts to include while launching tests
+     */
     private File includesDir;
 
+    /**
+     * The directory containing the tests to launch
+     */
     private File scriptsDir;
 
     @Override

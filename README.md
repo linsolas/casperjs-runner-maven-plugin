@@ -38,7 +38,7 @@ Here is a list of things that should be done to make this plugin awesome:
 - ~~Set default values for some parameters (```tests.directory``` for example)~~
 - ~~Manage sub-directories where files are included~~
 - ~~Manage a list of excludes / includes for the tests to run~~
-- Publish to Maven Central
+- ~~Publish to Maven Central~~
 
 ## Issues / Enhancements
 

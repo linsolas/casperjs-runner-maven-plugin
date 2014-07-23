@@ -2,6 +2,7 @@ package com.github.linsolas.casperjsrunner;
 
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
+import static com.google.common.collect.Sets.newTreeSet;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,6 +12,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -229,7 +231,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             return;
         }
         init();
-        List<String> scripts = findScripts();
+        TreeSet<String> scripts = findScripts();
         Result globalResult = executeScripts(scripts);
         getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {
@@ -283,11 +285,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-    private List<String> findScripts() {
-        return new ScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes).findScripts();
+    private TreeSet<String> findScripts() {
+        return newTreeSet(new ScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes).findScripts());
     }
 
-    private Result executeScripts(final List<String> files) {
+    private Result executeScripts(final TreeSet<String> files) {
         Result result = new Result();
         for (String file : files) {
             File f = new File(scriptsDir, file);

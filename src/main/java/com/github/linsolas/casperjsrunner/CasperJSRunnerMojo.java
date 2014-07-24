@@ -194,8 +194,15 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * Set the value for the CasperJS option --direct: will output log messages directly to the console.
      */
+    @Deprecated
     @Parameter(property = "casperjs.direct", defaultValue = "false")
     private boolean direct;
+
+    /**
+     * Set the value for the CasperJS option --verbose: will output log messages directly to the console.
+     */
+    @Parameter(property = "casperjs.casper.verbose", defaultValue = "false")
+    private boolean casperVerbose;
 
     /**
      * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
@@ -402,6 +409,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // Option --direct, to output log messages to the console
         if (direct) {
             cmdLine.addArgument("--direct");
+        }
+        // Option --verbose, to output log messages to the console
+        if (casperVerbose) {
+            cmdLine.addArgument("--verbose");
         }
         // Option --engine, to select phantomJS or slimerJS engine
         if (StringUtils.isNotBlank(engine)) {

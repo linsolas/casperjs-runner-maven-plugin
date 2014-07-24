@@ -295,10 +295,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             }
         }
 
-        if (enableXmlReport) {
-            getLogger().debug("creating directories to hold xunit file(s)");
-            targetDir.mkdirs();
-        }
     }
 
     private TreeSet<String> findScripts() {
@@ -388,7 +384,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
                 cmdLine.addArgument(argument, false);
             }
         }
-        return executeCommand(cmdLine);
+        return executeCommand(cmdLine, f);
     }
 
     private void findCasperRuntime() {
@@ -443,12 +439,17 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-    private int executeCommand(CommandLine line) {
+    private int executeCommand(CommandLine line, File f) {
         getLogger().debug("Execute CasperJS command [" + line + "], with env: " + environmentVariables);
         try {
             DefaultExecutor executor = new DefaultExecutor();
-            executor.setExitValues(new int[] {0,1});
-            return executor.execute(line, environmentVariables);
+            File scriptOutputDir = new File(getScriptOutputDir(f));
+            int cmdReturnedValue;
+            scriptOutputDir.mkdirs();
+            executor.setExitValues(new int[] {0, 1});
+            executor.setWorkingDirectory(scriptOutputDir);
+            cmdReturnedValue = executor.execute(line);
+            return cmdReturnedValue;
         } catch (final IOException e) {
             if (verbose) {
                 getLogger().error("Could not run CasperJS command", e);
@@ -457,4 +458,30 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
+    private String getScriptOutputDir(File script) {
+        String[] outputPath;
+        String scriptOutputDir = "", tmpFileName = "";
+        File tmpFile;
+        int i, testsDirDepthFromRoot = -1;
+
+        outputPath = script.getAbsolutePath().split("\\\\|/");
+
+        i = 0;
+        while(testsDirDepthFromRoot == -1) {
+            tmpFileName += outputPath[i] + File.separatorChar;
+            tmpFile = new File(tmpFileName);
+            if(tmpFile.getAbsolutePath().equals(testsDir.getAbsolutePath())) {
+                testsDirDepthFromRoot = i;
+            } else {
+                i++;
+            }
+        }
+
+        for(i = testsDirDepthFromRoot; i < outputPath.length - 1; i++) {
+            scriptOutputDir += outputPath[i] + File.separatorChar;
+        }
+        scriptOutputDir += script.getName().replaceAll("\\.", "_");
+
+        return targetDir.getAbsolutePath() + File.separatorChar + scriptOutputDir;
+    }
 }

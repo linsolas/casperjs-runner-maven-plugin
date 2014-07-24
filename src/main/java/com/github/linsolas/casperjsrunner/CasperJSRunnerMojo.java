@@ -214,6 +214,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine
      * (phantomjs or slimerjs)
      */
+
+    @Parameter(property = "casperjs.ignoreSslErrors", defaultValue = "false")
+    private boolean ignoreSslErrors;
+
     @Parameter(property = "casperjs.engine")
     private String engine;
 
@@ -413,6 +417,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // Option --verbose, to output log messages to the console
         if (casperVerbose) {
             cmdLine.addArgument("--verbose");
+        }
+        // Option --ignore-ssl-errors
+        if(ignoreSslErrors) {
+            cmdLine.addArgument("--ignore-ssl-errors=true");
         }
         // Option --engine, to select phantomJS or slimerJS engine
         if (StringUtils.isNotBlank(engine)) {

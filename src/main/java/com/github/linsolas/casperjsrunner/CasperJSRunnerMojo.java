@@ -218,6 +218,9 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(property = "casperjs.ignoreSslErrors", defaultValue = "false")
     private boolean ignoreSslErrors;
 
+    @Parameter(property = "casperjs.proxyAuth")
+    private String proxyAuth;
+
     @Parameter(property = "casperjs.engine")
     private String engine;
 
@@ -421,6 +424,10 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // Option --ignore-ssl-errors
         if(ignoreSslErrors) {
             cmdLine.addArgument("--ignore-ssl-errors=true");
+        }
+        // Option --proxy-auth
+        if(StringUtils.isNotBlank(proxyAuth)) {
+            cmdLine.addArgument("--proxy-auth=" + proxyAuth);
         }
         // Option --engine, to select phantomJS or slimerJS engine
         if (StringUtils.isNotBlank(engine)) {

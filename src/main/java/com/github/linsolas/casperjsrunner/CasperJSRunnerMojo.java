@@ -178,6 +178,13 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     @Parameter(property = "casperjs.generateLogs", defaultValue = "false")
     private boolean generateLogs;
+
+    @Parameter(property = "casperjs.generateCookies", defaultValue = "false")
+    private boolean generateCookies;
+
+    @Parameter(property = "casperjs.cookies")
+    private String cookies;
+
     /**
      * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
      */
@@ -248,6 +255,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * The directory containing the tests to launch
      */
     private File scriptsDir;
+
+    private boolean mustCopyCookies = false;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -370,6 +379,21 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         if (enableXmlReport) {
             cmdLine.addArgument("--xunit=results.xml");
         }
+
+        if (StringUtils.isNotBlank(cookies)) {
+            File cookFile = new File(cookies);
+            if(cookFile.isFile()) {
+                cmdLine.addArgument("--cookies-file=" + cookies);
+                if(generateCookies) {
+                    mustCopyCookies = true;
+                }
+            } else {
+                getLogger().warn("Couldn't find the specified cookies file: \"" + cookies + "\".");
+            }
+        } else if (generateCookies) {
+            cmdLine.addArgument("--cookies-file=cookies_file.txt");
+        }
+
         // Option --fast-fast, to terminate the test suite once a failure is
         // found
         if (failFast) {
@@ -462,6 +486,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             if(generateLogs) {
                 generateLog(line, scriptOutputDir.getAbsolutePath(), outputStream.toString());
             }
+
+            if(mustCopyCookies) {
+                new FileUtils().copyFile(new File(cookies), new File(scriptOutputDir.getAbsolutePath() + "\\cookies_file.txt"));
+            }
+
             return cmdReturnedValue;
         } catch (final IOException e) {
             if (verbose) {

@@ -5,6 +5,7 @@ import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 import static com.google.common.collect.Sets.newTreeSet;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
@@ -173,6 +176,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(property = "casperjs.enableXmlReport", defaultValue = "false")
     private boolean enableXmlReport;
 
+    @Parameter(property = "casperjs.generateLogs", defaultValue = "false")
+    private boolean generateLogs;
     /**
      * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
      */
@@ -443,18 +448,49 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         getLogger().debug("Execute CasperJS command [" + line + "], with env: " + environmentVariables);
         try {
             DefaultExecutor executor = new DefaultExecutor();
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
             File scriptOutputDir = new File(getScriptOutputDir(f));
             int cmdReturnedValue;
             scriptOutputDir.mkdirs();
             executor.setExitValues(new int[] {0, 1});
+            executor.setStreamHandler(streamHandler);
             executor.setWorkingDirectory(scriptOutputDir);
             cmdReturnedValue = executor.execute(line);
+            getLogger().info("CasperJS console output for '" + f.getName() + "'\n" + outputStream.toString());
+
+            if(generateLogs) {
+                generateLog(line, scriptOutputDir.getAbsolutePath(), outputStream.toString());
+            }
             return cmdReturnedValue;
         } catch (final IOException e) {
             if (verbose) {
                 getLogger().error("Could not run CasperJS command", e);
             }
             return -1;
+        }
+    }
+
+    private void generateLog(CommandLine line, String scriptOutputDir, String consoleOutput) {
+        try {
+            File log = new File(scriptOutputDir, "build.log");
+            String[] lineTmp;
+            ArrayList<String> lineResult = new ArrayList<String>();
+
+            log.createNewFile();
+
+            lineTmp = line.toString().split(", ");
+            lineTmp[1] = lineTmp[0] + " " + lineTmp[1];
+
+            for(int i = 1; i < lineTmp.length; i++) {
+                lineResult.add(lineTmp[i]);
+            }
+            lineResult.add("");
+            lineResult.add(consoleOutput);
+
+            new FileUtils().writeLines(log, lineResult);
+        } catch (final IOException e) {
+            getLogger().error("Could not create the log file of the script: ", e);
         }
     }
 

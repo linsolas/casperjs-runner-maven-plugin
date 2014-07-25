@@ -1,7 +1,12 @@
 language: java
-script: mvn $TARGET
 jdk: oraclejdk7
-env:
-  matrix:
-    - TARGET='install'
-    - TARGET='-Pit install'
+before_install:
+  - wget https://github.com/n1k0/casperjs/archive/1.1-beta3.tar.gz
+  - tar xvf ${CASPER_VERSION}.tar.gz -C casper
+  - export PATH=$PATH:casper/bin
+before_script:
+  - phantomjs --version
+  - casperjs --version
+script:
+  - mvn install
+  - mvn -Pit install

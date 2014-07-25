@@ -3,8 +3,7 @@ jdk: oraclejdk7
 before_install:
   - wget https://github.com/n1k0/casperjs/archive/1.1-beta3.tar.gz
   - tar xvf 1.1-beta3.tar.gz
-  - export PATH=$PATH:casperjs-1.1-beta3/bin
-before_script:
+  - export PATH=$PATH:$(pwd)/casperjs-1.1-beta3/bin
   - phantomjs --version
   - casperjs --version
 script:

@@ -9,3 +9,5 @@ before_install:
 script:
   - mvn install
   - mvn -Pit install
+after_script:
+  - find -name build.log -exec cat {} \;

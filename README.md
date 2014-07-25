@@ -47,3 +47,6 @@ If you encounter issues or think about any kind of enhancements, you can add the
 ## License
 
 This plugin is licensed with [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+## CI
+![Build Status Images](https://travis-ci.org/burgacl/casperjs-runner-maven-plugin.svg)

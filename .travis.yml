@@ -1,0 +1,7 @@
+language: java
+script: mvn $TARGET
+jdk: oraclejdk7
+env:
+  matrix:
+    - TARGET='install'
+    - TARGET='-Pit install'

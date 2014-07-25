@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.linsolas</groupId>
     <artifactId>casperjs-runner-maven-plugin</artifactId>
-    <version>1.0.2-SNAPSHOT</version>
+    <version>1.0.2-20140725</version>
     <name>CasperJS runner Maven plugin</name>
     <description>Runs JavaScript and/or CoffeScript test files on CasperJS instance</description>
     <packaging>maven-plugin</packaging>

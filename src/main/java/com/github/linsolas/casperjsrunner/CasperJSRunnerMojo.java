@@ -69,25 +69,25 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private String test;
 
     /**
-     * A list of <code>&lt;testInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.
+     * A list of <code>&lt;testsInclude&gt;</code> elements specifying the tests (by pattern) that should be included in testing.
      * <br/><b>Default value:</b> When not specified and when the test parameter is not specified, the default includes will be
      * (javascript patterns will only be set if <code>includeJS</code> is <code>true</code>, and coffee patterns will only be set
      * if <code>includeCS</code> is <code>true</code>)
 <br/><br/>
-<code>&lt;testIncludes&gt;<br/>
-&nbsp;&nbsp;&lt;testInclude&gt;**&#47;Test*.js&lt;/testInclude&gt;<br/>
-&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*Test.js&lt;/testInclude&gt;<br/>
-&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*TestCase.js&lt;/testInclude&gt;<br/>
-&nbsp;&nbsp;&lt;testInclude&gt;**&#47;Test*.coffee&lt;/testInclude&gt;<br/>
-&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*Test.coffee&lt;/testInclude&gt;<br/>
-&nbsp;&nbsp;&lt;testInclude&gt;**&#47;*TestCase.coffee&lt;/testInclude&gt;<br/>
-&lt;/testIncludes&gt;</code>
+<code>&lt;testsIncludes&gt;<br/>
+&nbsp;&nbsp;&lt;testsInclude&gt;**&#47;Test*.js&lt;/testsInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testsInclude&gt;**&#47;*Test.js&lt;/testsInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testsInclude&gt;**&#47;*TestCase.js&lt;/testsInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testsInclude&gt;**&#47;Test*.coffee&lt;/testsInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testsInclude&gt;**&#47;*Test.coffee&lt;/testsInclude&gt;<br/>
+&nbsp;&nbsp;&lt;testsInclude&gt;**&#47;*TestCase.coffee&lt;/testsInclude&gt;<br/>
+&lt;/testsIncludes&gt;</code>
      */
     @Parameter
     private List<String> testsIncludes;
 
     /**
-     * A list of <code>&lt;testExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
+     * A list of <code>&lt;testsExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
      */
     @Parameter
     private List<String> testsExcludes;

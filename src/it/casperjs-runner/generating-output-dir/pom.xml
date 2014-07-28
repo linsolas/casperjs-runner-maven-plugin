@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.linsolas</groupId>
+  <artifactId>generating-output-dir</artifactId>
+  <version>1.0</version>
+
+  <name>CasperJS Runner :: script output directory</name>
+
+  <url>no-url</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <casperjs.verbose>true</casperjs.verbose>
+  </properties>
+
+  <build>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.github.linsolas</groupId>
+          <artifactId>casperjs-runner-maven-plugin</artifactId>
+          <version>@pom.version@</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>com.github.linsolas</groupId>
+        <artifactId>casperjs-runner-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
+		<configuration>
+			<testsDir>${project.basedir}/src/test/casperjs/testsDir</testsDir>
+		</configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>

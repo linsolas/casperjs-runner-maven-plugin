@@ -1,0 +1,29 @@
+language: java
+jdk: oraclejdk7
+before_install:
+  - wget https://github.com/n1k0/casperjs/archive/1.1-beta3.tar.gz
+  - wget https://github.com/n1k0/casperjs/archive/1.0.4.tar.gz
+  - tar xvf 1.1-beta3.tar.gz
+  - tar xvf 1.0.4.tar.gz
+  - export PATH=$PATH:$(pwd)/casperjs-1.1-beta3/bin
+  - phantomjs --version
+  - casperjs --version
+  - echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+          <toolchains>
+            <toolchain>
+              <type>casperjs</type>
+              <provides> <version>1.0.4</version> </provides>
+              <configuration> <casperjsExecutable>$(pwd)/casperjs-1.0.4/bin/casperjs</casperjsExecutable> </configuration>
+            </toolchain>
+            <toolchain>
+              <type>casperjs</type>
+              <provides> <version>1.1.0</version> </provides>
+              <configuration> <casperjsExecutable>$(pwd)/casperjs-1.1-beta3/bin/casperjs</casperjsExecutable> </configuration>
+            </toolchain>
+
+          </toolchains>" > ~/.m2/toolchains.xml
+script:
+  - mvn install
+  - mvn -X -Pit install
+after_script:
+  - find -name build.log -exec cat {} \;

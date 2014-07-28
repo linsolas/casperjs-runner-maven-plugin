@@ -5,6 +5,7 @@ import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 import static com.google.common.collect.Sets.newTreeSet;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,8 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
+import org.apache.commons.exec.PumpStreamHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
@@ -173,6 +176,15 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     @Parameter(property = "casperjs.enableXmlReport", defaultValue = "false")
     private boolean enableXmlReport;
 
+    @Parameter(property = "casperjs.generateLogs", defaultValue = "false")
+    private boolean generateLogs;
+
+    @Parameter(property = "casperjs.generateCookies", defaultValue = "false")
+    private boolean generateCookies;
+
+    @Parameter(property = "casperjs.cookies")
+    private String cookies;
+
     /**
      * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
      */
@@ -182,8 +194,15 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * Set the value for the CasperJS option --direct: will output log messages directly to the console.
      */
+    @Deprecated
     @Parameter(property = "casperjs.direct", defaultValue = "false")
     private boolean direct;
+
+    /**
+     * Set the value for the CasperJS option --verbose: will output log messages directly to the console.
+     */
+    @Parameter(property = "casperjs.casper.verbose", defaultValue = "false")
+    private boolean casperVerbose;
 
     /**
      * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
@@ -195,6 +214,13 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine
      * (phantomjs or slimerjs)
      */
+
+    @Parameter(property = "casperjs.ignoreSslErrors", defaultValue = "false")
+    private boolean ignoreSslErrors;
+
+    @Parameter(property = "casperjs.proxyAuth")
+    private String proxyAuth;
+
     @Parameter(property = "casperjs.engine")
     private String engine;
 
@@ -243,6 +269,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * The directory containing the tests to launch
      */
     private File scriptsDir;
+
+    private boolean mustCopyCookies = false;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
@@ -295,10 +323,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             }
         }
 
-        if (enableXmlReport) {
-            getLogger().debug("creating directories to hold xunit file(s)");
-            targetDir.mkdirs();
-        }
     }
 
     private TreeSet<String> findScripts() {
@@ -367,8 +391,23 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         // Option --xunit, to export results in XML file
         if (enableXmlReport) {
-            cmdLine.addArgument("--xunit=" + new File(targetDir, "TEST-"+f.getName().replaceAll("\\.", "_") + ".xml"));
+            cmdLine.addArgument("--xunit=results.xml");
         }
+
+        if (StringUtils.isNotBlank(cookies)) {
+            File cookFile = new File(cookies);
+            if(cookFile.isFile()) {
+                cmdLine.addArgument("--cookies-file=" + cookies);
+                if(generateCookies) {
+                    mustCopyCookies = true;
+                }
+            } else {
+                getLogger().warn("Couldn't find the specified cookies file: \"" + cookies + "\".");
+            }
+        } else if (generateCookies) {
+            cmdLine.addArgument("--cookies-file=cookies_file.txt");
+        }
+
         // Option --fast-fast, to terminate the test suite once a failure is
         // found
         if (failFast) {
@@ -377,6 +416,18 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // Option --direct, to output log messages to the console
         if (direct) {
             cmdLine.addArgument("--direct");
+        }
+        // Option --verbose, to output log messages to the console
+        if (casperVerbose) {
+            cmdLine.addArgument("--verbose");
+        }
+        // Option --ignore-ssl-errors
+        if(ignoreSslErrors) {
+            cmdLine.addArgument("--ignore-ssl-errors=true");
+        }
+        // Option --proxy-auth
+        if(StringUtils.isNotBlank(proxyAuth)) {
+            cmdLine.addArgument("--proxy-auth=" + proxyAuth);
         }
         // Option --engine, to select phantomJS or slimerJS engine
         if (StringUtils.isNotBlank(engine)) {
@@ -388,7 +439,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
                 cmdLine.addArgument(argument, false);
             }
         }
-        return executeCommand(cmdLine);
+        return executeCommand(cmdLine, f);
     }
 
     private void findCasperRuntime() {
@@ -443,12 +494,30 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-    private int executeCommand(CommandLine line) {
+    private int executeCommand(CommandLine line, File f) {
         getLogger().debug("Execute CasperJS command [" + line + "], with env: " + environmentVariables);
         try {
             DefaultExecutor executor = new DefaultExecutor();
-            executor.setExitValues(new int[] {0,1});
-            return executor.execute(line, environmentVariables);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            PumpStreamHandler streamHandler = new PumpStreamHandler(outputStream);
+            File scriptOutputDir = new File(getScriptOutputDir(f));
+            int cmdReturnedValue;
+            scriptOutputDir.mkdirs();
+            executor.setExitValues(new int[] {0, 1});
+            executor.setStreamHandler(streamHandler);
+            executor.setWorkingDirectory(scriptOutputDir);
+            cmdReturnedValue = executor.execute(line);
+            getLogger().info("CasperJS console output for '" + f.getName() + "'\n" + outputStream.toString());
+
+            if(generateLogs) {
+                generateLog(line, scriptOutputDir.getAbsolutePath(), outputStream.toString());
+            }
+
+            if(mustCopyCookies) {
+                new FileUtils().copyFile(new File(cookies), new File(scriptOutputDir.getAbsolutePath() + "\\cookies_file.txt"));
+            }
+
+            return cmdReturnedValue;
         } catch (final IOException e) {
             if (verbose) {
                 getLogger().error("Could not run CasperJS command", e);
@@ -457,4 +526,53 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
+    private void generateLog(CommandLine line, String scriptOutputDir, String consoleOutput) {
+        try {
+            File log = new File(scriptOutputDir, "build.log");
+            String[] lineTmp;
+            ArrayList<String> lineResult = new ArrayList<String>();
+
+            log.createNewFile();
+
+            lineTmp = line.toString().split(", ");
+            lineTmp[1] = lineTmp[0] + " " + lineTmp[1];
+
+            for(int i = 1; i < lineTmp.length; i++) {
+                lineResult.add(lineTmp[i]);
+            }
+            lineResult.add("");
+            lineResult.add(consoleOutput);
+
+            new FileUtils().writeLines(log, lineResult);
+        } catch (final IOException e) {
+            getLogger().error("Could not create the log file of the script: ", e);
+        }
+    }
+
+    private String getScriptOutputDir(File script) {
+        String[] outputPath;
+        String scriptOutputDir = "", tmpFileName = "";
+        File tmpFile;
+        int i, testsDirDepthFromRoot = -1;
+
+        outputPath = script.getAbsolutePath().split("\\\\|/");
+
+        i = 0;
+        while(testsDirDepthFromRoot == -1) {
+            tmpFileName += outputPath[i] + File.separatorChar;
+            tmpFile = new File(tmpFileName);
+            if(tmpFile.getAbsolutePath().equals(testsDir.getAbsolutePath())) {
+                testsDirDepthFromRoot = i;
+            } else {
+                i++;
+            }
+        }
+
+        for(i = testsDirDepthFromRoot; i < outputPath.length - 1; i++) {
+            scriptOutputDir += outputPath[i] + File.separatorChar;
+        }
+        scriptOutputDir += script.getName().replaceAll("\\.", "_");
+
+        return targetDir.getAbsolutePath() + File.separatorChar + scriptOutputDir;
+    }
 }

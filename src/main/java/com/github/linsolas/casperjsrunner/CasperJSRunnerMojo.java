@@ -90,7 +90,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private List<String> testsIncludes;
 
     /**
-     * A list of <code>&lt;testExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
+     * A list of <code>&lt;testsExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
      */
     @Parameter
     private List<String> testsExcludes;

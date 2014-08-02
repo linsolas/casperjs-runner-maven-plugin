@@ -21,15 +21,16 @@ This plugin has been tested on two environments :
 - PhantomJS (v **1.8.2**) and CasperJS (v **1.0.4**) where installed.
 - PhantomJS (v **1.9.7**) and CasperJS (v **1.1.0-beta3**) where installed.
 
+## Usage
+
+See the [plugin site](http://linsolas.github.io/casperjs-runner-maven-plugin/)
 
 ## Build
 
 Download the sources, and build the plugin using the ```mvn clean install``` command. You can build this plugin using Maven 2.2.x or Maven 3.x, and a JDK 1.6.
 
-## Usage
-
-See the [plugin site](http://linsolas.github.io/casperjs-runner-maven-plugin/)
-
+## CI
+[![Build Status Images](https://travis-ci.org/netceler/casperjs-runner-maven-plugin.svg)](https://travis-ci.org/netceler/casperjs-runner-maven-plugin)
 
 ## TODO
 

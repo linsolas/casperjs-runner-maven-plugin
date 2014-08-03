@@ -66,8 +66,7 @@ script:
   - mvn -version
   - phantomjs --version
   - casperjs --version
-  - mvn --settings settings.xml -Pit install
+  - mvn --settings settings.xml -Pit install -Dinvoker.streamLogs=true
 
 after_script:
-  - find -name build.log -exec cat {} \;
   - cat ~/.m2/settings.xml

@@ -63,7 +63,8 @@ before_script:
 script:
   - echo $PATH
   - which mvn
-  - cat ~/.mavenrc
+  - alias
+  - env
   - java -version
   - mvn -version
   - phantomjs --version

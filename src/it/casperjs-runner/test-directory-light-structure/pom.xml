@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>test-directory-light-structure</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: specific test directory with light structure</name>
 

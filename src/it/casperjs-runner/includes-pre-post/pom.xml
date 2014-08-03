@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>include-pre-post</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: includes, pre and post</name>
 

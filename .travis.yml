@@ -27,7 +27,8 @@ install:
   - tar zxf casperjs-1.1-beta3.tar.gz
 
 before_script:
-  - export PATH=$(pwd)/casperjs-1.1-beta3/bin:$(pwd)/phantomjs-1.9.7-linux-x86_64/bin:$PATH
+  - export PATH=$(pwd)/casperjs-1.1-beta3/bin:$(pwd)/phantomjs-1.9.7-linux-x86_64/bin:$(pwd)/maven/bin:$PATH
+  - echo "export M2_HOME=$(pwd)/maven" > ~/.mavenrc
   - echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
           <toolchains>
             <toolchain>
@@ -62,10 +63,10 @@ before_script:
 
 script:
   - java -version
-  - $(pwd)/maven/bin/mvn -version
+  - mvn -version
   - phantomjs --version
   - casperjs --version
-  - $(pwd)/maven/bin/mvn --settings settings.xml -Pit install
+  - mvn --settings settings.xml -Pit install
 
 after_script:
   - find -name build.log -exec cat {} \;

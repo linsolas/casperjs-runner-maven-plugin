@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>recursive</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: recursive</name>
 

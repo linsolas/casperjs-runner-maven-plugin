@@ -6,20 +6,28 @@ jdk:
   - oraclejdk7
   - oraclejdk8
 
+env:
+  matrix:
+    - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
+    - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+    - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz"
+
 before_install:
+  - wget $MAVEN_URL --output-document=maven.tar.gz
   - wget https://phantomjs.googlecode.com/files/phantomjs-1.8.2-linux-x86_64.tar.bz2
   - wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.7-linux-x86_64.tar.bz2
   - wget https://github.com/n1k0/casperjs/archive/1.0.4.tar.gz -O casperjs-1.0.4.tar.gz
   - wget https://github.com/n1k0/casperjs/archive/1.1-beta3.tar.gz -O casperjs-1.1-beta3.tar.gz
 
 install:
+  - mkdir maven && tar --strip-components=1 -zxf maven.tar.gz -C maven
   - tar jxf phantomjs-1.8.2-linux-x86_64.tar.bz2
   - tar jxf phantomjs-1.9.7-linux-x86_64.tar.bz2
   - tar zxf casperjs-1.0.4.tar.gz
   - tar zxf casperjs-1.1-beta3.tar.gz
 
 before_script:
-  - export PATH=$(pwd)/casperjs-1.1-beta3/bin:$(pwd)/phantomjs-1.9.7-linux-x86_64/bin:$PATH
+  - export PATH=$(pwd)/casperjs-1.1-beta3/bin:$(pwd)/phantomjs-1.9.7-linux-x86_64/bin:$(pwd)/maven/bin:$PATH
   - echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
           <toolchains>
             <toolchain>
@@ -53,6 +61,8 @@ before_script:
           </settings>" > settings.xml
 
 script:
+  - java -version
+  - mvn -version
   - phantomjs --version
   - casperjs --version
   - mvn --settings settings.xml -Pit install

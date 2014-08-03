@@ -59,3 +59,4 @@ script:
 
 after_script:
   - find -name build.log -exec cat {} \;
+  - cat ~/.m2/settings.xml

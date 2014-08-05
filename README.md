@@ -30,7 +30,7 @@ See the [plugin site](http://linsolas.github.io/casperjs-runner-maven-plugin/)
 Download the sources, and build the plugin using the ```mvn clean install``` command. You can build this plugin using Maven 2.2.x or Maven 3.x, and a JDK 1.6.
 
 ## CI
-[![Build Status Images](https://travis-ci.org/netceler/casperjs-runner-maven-plugin.svg)](https://travis-ci.org/netceler/casperjs-runner-maven-plugin)
+[![Build Status Images](https://travis-ci.org/linsolas/casperjs-runner-maven-plugin.svg)](https://travis-ci.org/linsolas/casperjs-runner-maven-plugin)
 
 ## TODO
 

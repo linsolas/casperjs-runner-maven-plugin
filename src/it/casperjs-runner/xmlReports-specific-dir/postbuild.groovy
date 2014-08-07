@@ -7,8 +7,8 @@ assert file.text.contains('PASS 2 tests executed');
 assert file.text.contains('2 passed, 0 failed');
 assert file.text.contains('Tests run: 2, Success: 2 Failures: 0. Time elapsed:');
 
-assert new File(basedir, 'target/casperjs-reports/TEST-test_coffee.xml').exists();
+assert new File(basedir, 'target/xunit-reports/TEST-test_coffee.xml').exists();
 
-assert new File(basedir, 'target/casperjs-reports/TEST-test_js.xml').exists();
+assert new File(basedir, 'target/xunit-reports/TEST-test_js.xml').exists();
 
 return true;

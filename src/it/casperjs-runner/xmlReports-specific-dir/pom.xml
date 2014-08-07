@@ -7,11 +7,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.linsolas</groupId>
-  <artifactId>xmlReports</artifactId>
+  <artifactId>xmlReports-specific-dir</artifactId>
   <version>1.0</version>
   <packaging>pom</packaging>
 
-  <name>CasperJS Runner :: XML reports</name>
+  <name>CasperJS Runner :: XML reports with specific directory</name>
 
   <url>no-url</url>
 
@@ -46,6 +46,7 @@
         </executions>
         <configuration>
           <enableXmlReports>true</enableXmlReports>
+          <reportsDir>${project.build.directory}/xunit-reports</reportsDir>
         </configuration>
       </plugin>
     </plugins>

@@ -7,10 +7,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.github.linsolas</groupId>
-  <artifactId>casperjs-1.0</artifactId>
+  <artifactId>verbose</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
-  <name>CasperJS Runner :: CasperJS 1.0</name>
+  <name>CasperJS Runner :: verbose</name>
 
   <url>no-url</url>
 
@@ -34,38 +35,19 @@
 
     <plugins>
       <plugin>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <version>1.0</version>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-            <goals><goal>toolchain</goal></goals>
-          </execution>
-        </executions>
-        <configuration>
-          <toolchains>
-            <casperjs><version>1.0.4</version></casperjs>
-          </toolchains>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>com.github.linsolas</groupId>
         <artifactId>casperjs-runner-maven-plugin</artifactId>
-        <extensions>true</extensions>
         <executions>
           <execution>
             <id>test</id>
             <goals>
               <goal>test</goal>
             </goals>
+            <configuration>
+              <logLevel>debug</logLevel>
+            </configuration>
           </execution>
         </executions>
-        <configuration>
-          <environmentVariables>
-            <PATH>${phantomjs-for-casper-1.0-path}:${env.PATH}</PATH>
-          </environmentVariables>
-        </configuration>
       </plugin>
     </plugins>
 

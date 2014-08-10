@@ -99,8 +99,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private boolean ignoreTestFailures = false;
 
     /**
-     * Set the plugin to be verbose during its execution. It will ALSO impact the verbosity of the CasperJS execution (ie, setting
-     * the --verbose command line option).
+     * Set the plugin to be verbose during its execution.
      */
     @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
@@ -186,13 +185,22 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private String logLevel;
 
     /**
-     * Set the value for the CasperJS option --direct: will output log messages directly to the console.
+     * Set the CasperJS --direct option: will output log messages directly to the console.
+     * Deprecated: use the <code>casperjsVerbose</code> option
      */
+    @Deprecated
     @Parameter(property = "casperjs.direct", defaultValue = "false")
     private boolean direct;
 
     /**
-     * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
+     * For CasperJS 1.1.x, set --verbose option, --direct for CasperJS 1.0.x: will output log messages directly to the console
+     * Deprecated: use the <code>casperjsVerbose</code> option
+     */
+    @Parameter(property = "casperjs.casperjsVerbose", defaultValue = "false")
+    private boolean casperjsVerbose;
+
+    /**
+     * Set the CasperJS --fail-fast option: will terminate the current test suite as soon as a first failure is encountered.
      */
     @Parameter(property = "casperjs.failFast", defaultValue = "false")
     private boolean failFast;
@@ -277,6 +285,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             getLogger().info("CasperJS version: " + casperJsVersion);
         }
 
+        if (direct && (casperJsVersion.getMajorVersion() > 1 || casperJsVersion.getMajorVersion() == 1 && casperJsVersion.getMinorVersion() > 0)) {
+            getLogger().warn("direct option is deprecated, use casperjsVerbose instead");
+            casperjsVerbose = true;
+        }
+
         testsIncludes = checkPatterns(testsIncludes, includeJS, includeCS);
 
         if (testsExcludes == null) {
@@ -330,14 +343,26 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private int executeScript(File f) {
         CommandLine cmdLine = new CommandLine(casperRuntime);
 
-        // Option --verbose
-        if (verbose) {
-            cmdLine.addArgument("--verbose");
+        // First, native options
+
+        // Option --verbose / --direct, to output log messages to the console
+        if (casperjsVerbose) {
+            if (casperJsVersion.getMajorVersion() < 1 || casperJsVersion.getMajorVersion() == 1 && casperJsVersion.getMinorVersion() == 0) {
+                cmdLine.addArgument("--direct");
+            } else {
+                cmdLine.addArgument("--verbose");
+            }
         }
         // Option --log-level, to set the log level
         if (StringUtils.isNotBlank(logLevel)) {
             cmdLine.addArgument("--log-level=" + logLevel);
         }
+        // Option --engine, to select phantomJS or slimerJS engine
+        if (StringUtils.isNotBlank(engine)) {
+            cmdLine.addArgument("--engine=" + engine);
+        }
+
+        // Then, specific ones for unit testing
 
         cmdLine.addArgument("test");
 
@@ -379,14 +404,6 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         // found
         if (failFast) {
             cmdLine.addArgument("--fail-fast");
-        }
-        // Option --direct, to output log messages to the console
-        if (direct) {
-            cmdLine.addArgument("--direct");
-        }
-        // Option --engine, to select phantomJS or slimerJS engine
-        if (StringUtils.isNotBlank(engine)) {
-            cmdLine.addArgument("--engine=" + engine);
         }
         cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {

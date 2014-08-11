@@ -2,17 +2,6 @@ package com.github.linsolas.casperjsrunner;
 
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
-import static com.google.common.collect.Sets.newTreeSet;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeSet;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -30,6 +19,16 @@ import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 
 import com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
@@ -156,7 +155,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 
     /**
      * A list of <code>&lt;includesPattern&gt;</code> elements specifying the files (by pattern) to set on the <code>--includes</code>
-     * option.<br/>When not specified and the <code>${tests.directory}/includes</code> directory exists, this will be set to 
+     * option.<br/>When not specified and the <code>${tests.directory}/includes</code> directory exists, this will be set to
 <br/><br/>
 <code>&lt;includesPatterns&gt;<br/>
 &nbsp;&nbsp;&lt;includesPattern&gt;${tests.directory}/includes/**&#47;*.js&lt;/includesPattern&gt;<br/>
@@ -252,7 +251,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             return;
         }
         init();
-        TreeSet<String> scripts = findScripts();
+        Collection<String> scripts = findScripts();
         Result globalResult = executeScripts(scripts);
         getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {
@@ -301,11 +300,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-    private TreeSet<String> findScripts() {
-        return newTreeSet(new ScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes).findScripts());
+    private Collection<String> findScripts() {
+        return new OrdererScriptsFinderDecorator(new DefaultScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes)).findScripts();
     }
 
-    private Result executeScripts(final TreeSet<String> files) {
+    private Result executeScripts(final Collection<String> files) {
         Result result = new Result();
         for (String file : files) {
             File f = new File(scriptsDir, file);

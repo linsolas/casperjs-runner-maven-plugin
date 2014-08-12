@@ -1,6 +1,7 @@
 package com.github.linsolas.casperjsrunner;
 
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.PathToNameBuilder.buildName;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 
 import org.apache.commons.exec.CommandLine;
@@ -366,7 +367,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         // Option --xunit, to export results in XML file
         if (enableXmlReport) {
-            cmdLine.addArgument("--xunit=" + new File(targetDir, "TEST-"+f.getName().replaceAll("\\.", "_") + ".xml"));
+            cmdLine.addArgument("--xunit=" + new File(targetDir, "TEST-" + buildName(scriptsDir, f) + ".xml"));
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found

@@ -1,8 +1,8 @@
 package com.github.linsolas.casperjsrunner;
 
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.PathToNameBuilder.buildName;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
-import static com.google.common.collect.Sets.newTreeSet;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
@@ -288,7 +288,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             return;
         }
         init();
-        TreeSet<String> scripts = findScripts();
+        Collection<String> scripts = findScripts();
         Result globalResult = executeScripts(scripts);
         getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {
@@ -342,11 +342,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-    private TreeSet<String> findScripts() {
-        return newTreeSet(new ScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes).findScripts());
+    private Collection<String> findScripts() {
+        return new OrdererScriptsFinderDecorator(new DefaultScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes)).findScripts();
     }
 
-    private Result executeScripts(final TreeSet<String> files) {
+    private Result executeScripts(final Collection<String> files) {
         Result result = new Result();
         for (String file : files) {
             File f = new File(scriptsDir, file);
@@ -420,7 +420,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         // Option --xunit, to export results in XML file
         if (enableXmlReports) {
-            cmdLine.addArgument("--xunit=" + new File(reportsDir, "TEST-"+f.getName().replaceAll("\\.", "_") + ".xml"));
+            cmdLine.addArgument("--xunit=" + new File(reportsDir, "TEST-" + buildName(scriptsDir, f) + ".xml"));
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found

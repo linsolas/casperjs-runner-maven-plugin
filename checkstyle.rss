@@ -25,8 +25,8 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014</copyright>
     <item>
-      <title>File: 12,
-             Errors: 250,
+      <title>File: 14,
+             Errors: 257,
              Warnings: 0,
              Infos: 0
       </title>
@@ -60,20 +60,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PathToNameBuilder.java">com/github/linsolas/casperjsrunner/PathToNameBuilder.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  7
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.CasperjsToolchain.java">com/github/linsolas/casperjsrunner/toolchain/CasperjsToolchain.java</a>
                 </td>
                 <td>
@@ -88,6 +74,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PathToNameBuilder.java">com/github/linsolas/casperjsrunner/PathToNameBuilder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.OrdererScriptsFinderDecorator.java">com/github/linsolas/casperjsrunner/OrdererScriptsFinderDecorator.java</a>
                 </td>
                 <td>
@@ -97,7 +97,77 @@ under the License.
                   0
                 </td>
                 <td>
-                  10
+                  6
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.OSUtils.java">com/github/linsolas/casperjsrunner/OSUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain.java">com/github/linsolas/casperjsrunner/toolchain/DefaultCasperjsToolchain.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  19
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.CasperJSRunnerMojo.java">com/github/linsolas/casperjsrunner/CasperJSRunnerMojo.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  93
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PatternsChecker.java">com/github/linsolas/casperjsrunner/PatternsChecker.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  9
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.ArgQuoter.java">com/github/linsolas/casperjsrunner/ArgQuoter.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
                 </td>
               </tr>
                           <tr>
@@ -111,7 +181,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  3
                 </td>
               </tr>
                           <tr>
@@ -144,7 +214,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain.java">com/github/linsolas/casperjsrunner/toolchain/DefaultCasperjsToolchain.java</a>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchainFactory.java">com/github/linsolas/casperjsrunner/toolchain/DefaultCasperjsToolchainFactory.java</a>
                 </td>
                 <td>
                   0
@@ -153,7 +223,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  20
+                  25
                 </td>
               </tr>
                           <tr>
@@ -168,48 +238,6 @@ under the License.
                 </td>
                 <td>
                   29
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.CasperJSRunnerMojo.java">com/github/linsolas/casperjsrunner/CasperJSRunnerMojo.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  92
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchainFactory.java">com/github/linsolas/casperjsrunner/toolchain/DefaultCasperjsToolchainFactory.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  24
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PatternsChecker.java">com/github/linsolas/casperjsrunner/PatternsChecker.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  10
                 </td>
               </tr>
                       </tbody>

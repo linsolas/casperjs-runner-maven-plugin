@@ -1,8 +1,8 @@
 language: java
 
-env:
-  global:
-    - secure: hVrH2V1wGEdnE7LNPzFRM3eMZ3dHTSHHqByVO+4sg7ygNjX9VRjZN2Xc8d2mFL3ldLm4AzAhMF3isq70RPSNi9ixuN5RoBt5bOjDfSwKZFhlEj3zgXk/NjquOTNkYLuDWfPyLqIj1P1djc3rXgHHPPrETxaB7SBnwBLvYv8NW/Q=
+#env:
+#  global:
+#    - secure: $(travis encrypt GITHUB_OAUTH=<your personnal token>)
 
 matrix:
   include:

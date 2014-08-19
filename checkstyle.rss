@@ -69,21 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  8
-                </td>
-              </tr>
-                          <tr>
-                <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.OrdererScriptsFinderDecorator.java">com/github/linsolas/casperjsrunner/OrdererScriptsFinderDecorator.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  10
+                  7
                 </td>
               </tr>
                           <tr>
@@ -98,6 +84,20 @@ under the License.
                 </td>
                 <td>
                   2
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.OrdererScriptsFinderDecorator.java">com/github/linsolas/casperjsrunner/OrdererScriptsFinderDecorator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
                 </td>
               </tr>
                           <tr>
@@ -153,7 +153,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  19
+                  20
                 </td>
               </tr>
                           <tr>
@@ -195,7 +195,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  25
+                  24
                 </td>
               </tr>
                           <tr>
@@ -209,7 +209,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  9
+                  10
                 </td>
               </tr>
                       </tbody>

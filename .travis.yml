@@ -7,6 +7,8 @@ jdk:
   - oraclejdk8
 
 env:
+  global:
+    - secure: hVrH2V1wGEdnE7LNPzFRM3eMZ3dHTSHHqByVO+4sg7ygNjX9VRjZN2Xc8d2mFL3ldLm4AzAhMF3isq70RPSNi9ixuN5RoBt5bOjDfSwKZFhlEj3zgXk/NjquOTNkYLuDWfPyLqIj1P1djc3rXgHHPPrETxaB7SBnwBLvYv8NW/Q=
   matrix:
     - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
     - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
@@ -42,7 +44,14 @@ before_script:
               <configuration><casperjsExecutable>$(pwd)/casperjs-1.1-beta3/bin/casperjs</casperjsExecutable></configuration>
             </toolchain>
           </toolchains>" > ~/.m2/toolchains.xml
-  - sed -i "/<profiles>/ a\
+  - sed -e "/<settings>/ a\
+            <servers>\
+              <server>\
+                <id>github</id>\
+                <password>\${env.GITHUB_OAUTH}</password>\
+              </server>\
+            </servers>\
+          " -e "/<profiles>/ a\
               <profile>\
                 <id>casperjs</id>\
                 <activation>\
@@ -54,12 +63,12 @@ before_script:
                   <phantomjs-for-casper-1.1-path>$(pwd)/phantomjs-1.9.7-linux-x86_64/bin</phantomjs-for-casper-1.1-path>\
                 </properties>\
               </profile>\
-          " ~/.m2/settings.xml
+          " -i ~/.m2/settings.xml
 
 script:
   - java -version
   - mvn -version
   - phantomjs --version
   - casperjs --version
-  - mvn -Pit install -Dinvoker.streamLogs=true
+  - mvn -Psite,it install site -Dinvoker.streamLogs=true
 

@@ -60,20 +60,6 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PatternsChecker.java">com/github/linsolas/casperjsrunner/PatternsChecker.java</a>
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  0
-                </td>
-                <td>
-                  9
-                </td>
-              </tr>
-                          <tr>
-                <td>
                   <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchainFactory.java">com/github/linsolas/casperjsrunner/toolchain/DefaultCasperjsToolchainFactory.java</a>
                 </td>
                 <td>
@@ -88,7 +74,7 @@ under the License.
               </tr>
                           <tr>
                 <td>
-                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.LogUtils.java">com/github/linsolas/casperjsrunner/LogUtils.java</a>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PatternsChecker.java">com/github/linsolas/casperjsrunner/PatternsChecker.java</a>
                 </td>
                 <td>
                   0
@@ -97,7 +83,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  25
+                  9
                 </td>
               </tr>
                           <tr>
@@ -116,6 +102,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.LogUtils.java">com/github/linsolas/casperjsrunner/LogUtils.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  25
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.PathToNameBuilder.java">com/github/linsolas/casperjsrunner/PathToNameBuilder.java</a>
                 </td>
                 <td>
@@ -125,7 +125,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  7
+                  8
                 </td>
               </tr>
                           <tr>
@@ -167,7 +167,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
               </tr>
                           <tr>

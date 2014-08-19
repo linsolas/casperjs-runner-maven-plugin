@@ -1,5 +1,7 @@
 package com.github.linsolas.casperjsrunner;
 
+import static java.io.File.separator;
+
 import java.io.File;
 
 public class PathToNameBuilder {
@@ -9,8 +11,8 @@ public class PathToNameBuilder {
     public static String buildName(File rootDir, File path) {
         String result = path.getAbsolutePath();
         String rootPath = rootDir.getAbsolutePath();
-        if (!rootPath.endsWith(File.separator)) {
-            rootPath += File.separator;
+        if (!rootPath.endsWith(separator)) {
+            rootPath += separator;
         }
 
         if (!result.contains(rootPath)) {
@@ -18,7 +20,10 @@ public class PathToNameBuilder {
         }
 
         result = result.replace(rootPath, "");
-        result = result.replaceAll(File.separator, REPLACEMENT_CHAR);
+        // for Linux paths
+        result = result.replaceAll("/", REPLACEMENT_CHAR);
+        // for Windows paths
+        result = result.replaceAll("\\\\", REPLACEMENT_CHAR);
         result = result.replaceAll("\\.", REPLACEMENT_CHAR);
 
         return result;

@@ -1,6 +1,7 @@
 package com.github.linsolas.casperjsrunner;
 
 import static com.google.common.collect.Sets.newHashSet;
+import static java.io.File.separator;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -28,7 +29,7 @@ public class DefaultScriptsFinderTest {
         TEMP_DIR.mkdir();
 
         new File(TEMP_DIR, "subdir").mkdir();
-        new File(TEMP_DIR + File.separator + "subdir", "test1.js").createNewFile();
+        new File(TEMP_DIR + separator + "subdir", "test1.js").createNewFile();
 
         new File(TEMP_DIR, "test1.js").createNewFile();
         new File(TEMP_DIR, "test1.coffee").createNewFile();
@@ -80,7 +81,7 @@ public class DefaultScriptsFinderTest {
                 newHashSet("test1.coffee"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "test1.coffee", asList("*.*"), new ArrayList<String>()).findScripts()));
         assertEquals(
-                newHashSet("test1.js","test1.coffee", "subdir/test1.js"),
+                newHashSet("test1.js","test1.coffee", "subdir" + separator + "test1.js"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "test1", asList("*.*"), new ArrayList<String>()).findScripts()));
     }
 
@@ -116,10 +117,10 @@ public class DefaultScriptsFinderTest {
                 newHashSet("testSuite2.coffee"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "testSuite2.coffee", asList("*.js"), new ArrayList<String>()).findScripts()));
         assertEquals(
-                newHashSet("test1.js", "subdir/test1.js"),
+                newHashSet("test1.js", "subdir" + separator + "test1.js"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "test1.js", asList("*.coffee"), new ArrayList<String>()).findScripts()));
         assertEquals(
-                newHashSet("test1.js", "subdir/test1.js"),
+                newHashSet("test1.js", "subdir" + separator + "test1.js"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "test1.js", asList("*Suite*.*"), new ArrayList<String>()).findScripts()));
     }
 
@@ -129,10 +130,10 @@ public class DefaultScriptsFinderTest {
                 newHashSet("testSuite2.coffee"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "testSuite2.coffee", asList("*.js"), asList("*Suite*")).findScripts()));
         assertEquals(
-                newHashSet("test1.js", "subdir/test1.js"),
+                newHashSet("test1.js", "subdir" + separator + "test1.js"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "test1.js", asList("*.coffee"), asList("*test*")).findScripts()));
         assertEquals(
-                newHashSet("test1.js", "subdir/test1.js"),
+                newHashSet("test1.js", "subdir" + separator + "test1.js"),
                 newHashSet(new DefaultScriptsFinder(TEMP_DIR, "test1.js", asList("*Suite*.*"), asList("*test*")).findScripts()));
     }
 }

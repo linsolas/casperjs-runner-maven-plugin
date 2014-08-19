@@ -1,6 +1,8 @@
 package com.github.linsolas.casperjsrunner;
 
+import static com.github.linsolas.casperjsrunner.ArgQuoter.quote;
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.OSUtils.isWindows;
 import static com.github.linsolas.casperjsrunner.PathToNameBuilder.buildName;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 
@@ -46,7 +48,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * <br/><b>Default value:</b>
      * Found from <a href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a> named <b><i>casperjs</b></i>,
      * then from this parameter,
-     * then from PATH with default value of <b>casperjs</b>
+     * then from PATH with default value of <b>casperjs</b> on Linux/Mac or <b>casperjs.bat</b> on Windows
      * @since 1.0.0
      */
     @Parameter(property = "casperjs.executable")
@@ -430,7 +432,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {
             for (String argument : arguments) {
-                cmdLine.addArgument(argument, false);
+                cmdLine.addArgument(quote(argument), false);
             }
         }
         return executeCommand(cmdLine);
@@ -459,8 +461,12 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
 
         if (casperRuntime == null) {
-            getLogger().debug("No parameter specified, falling back to default 'casperjs'");
-            casperRuntime = "casperjs";
+            String defaultCasperRuntime = "casperjs";
+            if (isWindows()) {
+                defaultCasperRuntime = "casperjs.bat";
+            }
+            getLogger().debug("No parameter specified, falling back to default '" + defaultCasperRuntime + "'");
+            casperRuntime = defaultCasperRuntime;
         }
     }
 

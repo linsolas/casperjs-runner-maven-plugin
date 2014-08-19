@@ -63,12 +63,29 @@
         </executions>
         <configuration>
           <environmentVariables>
-            <PATH>${phantomjs-for-casper-1.0-path}:${env.PATH}</PATH>
+            <PATH>${custom-path}</PATH>
           </environmentVariables>
         </configuration>
       </plugin>
     </plugins>
 
   </build>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation><os><family>windows</family></os></activation>
+      <properties>
+        <custom-path>${phantomjs-for-casper-1.0-path};${env.PATH}</custom-path>
+      </properties>
+    </profile>
+    <profile>
+      <id>others</id>
+      <activation><os><family>!windows</family></os></activation>
+      <properties>
+        <custom-path>${phantomjs-for-casper-1.0-path}:${env.PATH}</custom-path>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

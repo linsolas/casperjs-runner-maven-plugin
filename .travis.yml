@@ -1,18 +1,35 @@
 language: java
 
-jdk:
-  - openjdk6
-  - openjdk7
-  - oraclejdk7
-  - oraclejdk8
-
 env:
   global:
     - secure: hVrH2V1wGEdnE7LNPzFRM3eMZ3dHTSHHqByVO+4sg7ygNjX9VRjZN2Xc8d2mFL3ldLm4AzAhMF3isq70RPSNi9ixuN5RoBt5bOjDfSwKZFhlEj3zgXk/NjquOTNkYLuDWfPyLqIj1P1djc3rXgHHPPrETxaB7SBnwBLvYv8NW/Q=
-  matrix:
-    - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
-    - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
-    - MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz"
+
+matrix:
+  include:
+    - jdk: "openjdk6"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
+    - jdk: "openjdk6"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+    - jdk: "openjdk6"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz"
+    - jdk: "openjdk7"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
+    - jdk: "openjdk7"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+    - jdk: "openjdk7"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz"
+    - jdk: "oraclejdk7"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
+    - jdk: "oraclejdk7"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+    - jdk: "oraclejdk7"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz"
+    - jdk: "oraclejdk8"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz"
+    - jdk: "oraclejdk8"
+      env: BUILD_SITE=false MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz"
+    - jdk: "oraclejdk8"
+      env: BUILD_SITE=true MAVEN_URL="http://mirror.bbln.org/apache/maven/maven-3/3.2.2/binaries/apache-maven-3.2.2-bin.tar.gz"
 
 before_install:
   - wget $MAVEN_URL --output-document=maven.tar.gz
@@ -70,5 +87,6 @@ script:
   - mvn -version
   - phantomjs --version
   - casperjs --version
-  - mvn -Psite,it install site -Dinvoker.streamLogs=true
+  - mvn -Pit install -Dinvoker.streamLogs=true
+  - if [ "${BUILD_SITE}" -eq "true" ]; then mvn -Psite site ; fi
 

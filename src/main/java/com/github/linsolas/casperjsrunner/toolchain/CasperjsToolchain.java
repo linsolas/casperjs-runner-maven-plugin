@@ -7,6 +7,10 @@ import org.apache.maven.toolchain.Toolchain;
  */
 public interface CasperjsToolchain extends Toolchain {
 
+    String KEY_CASPERJS_TYPE = "casperjs";
+
+    String KEY_CASPERJS_EXECUTABLE = "casperjsExecutable";
+
     String getCasperjsExecutable();
 
     void setCasperjsExecutable(String casperjsExecutable);

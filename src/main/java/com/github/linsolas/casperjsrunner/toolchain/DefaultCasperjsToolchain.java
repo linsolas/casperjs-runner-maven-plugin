@@ -12,18 +12,16 @@ import java.io.File;
  */
 public class DefaultCasperjsToolchain extends DefaultToolchain implements CasperjsToolchain {
 
-    public static final String KEY_CASPERJS_TYPE = "casperjs";
-    public static final String KEY_CASPERJS_EXECUTABLE = "casperjsExecutable";
-
-    protected DefaultCasperjsToolchain(ToolchainModel model, Logger logger) {
+    protected DefaultCasperjsToolchain(final ToolchainModel model, final Logger logger) {
         super(model, KEY_CASPERJS_TYPE, logger);
     }
 
     private String casperjsExecutable;
 
-    public String findTool(String toolName) {
+    @Override
+    public String findTool(final String toolName) {
         if (KEY_CASPERJS_TYPE.equals(toolName)) {
-            File casperjs = new File(FileUtils.normalize(getCasperjsExecutable()));
+            final File casperjs = new File(FileUtils.normalize(getCasperjsExecutable()));
             if (casperjs.exists()) {
                 return casperjs.getAbsolutePath();
             }
@@ -31,14 +29,17 @@ public class DefaultCasperjsToolchain extends DefaultToolchain implements Casper
         return null;
     }
 
+    @Override
     public String getCasperjsExecutable() {
         return this.casperjsExecutable;
     }
 
-    public void setCasperjsExecutable(String casperjsExecutable) {
+    @Override
+    public void setCasperjsExecutable(final String casperjsExecutable) {
         this.casperjsExecutable = casperjsExecutable;
     }
 
+    @Override
     public String toString() {
         return "CASPERJS[" + getCasperjsExecutable() + "]";
     }

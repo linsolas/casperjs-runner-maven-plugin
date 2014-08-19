@@ -1,13 +1,14 @@
 package com.github.linsolas.casperjsrunner;
 
 import static com.github.linsolas.casperjsrunner.ArgQuoter.quote;
+import static com.github.linsolas.casperjsrunner.CasperJsRuntimeFinder.findCasperRuntime;
+import static com.github.linsolas.casperjsrunner.CasperJsVersionRetriever.retrieveVersion;
+import static com.github.linsolas.casperjsrunner.CommandExecutor.executeCommand;
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
-import static com.github.linsolas.casperjsrunner.OSUtils.isWindows;
 import static com.github.linsolas.casperjsrunner.PathToNameBuilder.buildName;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
 
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
@@ -18,16 +19,9 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 
-import com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -299,12 +293,12 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     }
 
     private void init() throws MojoFailureException {
-        findCasperRuntime();
+        casperRuntime = findCasperRuntime(toolchainManager,session,casperExecPath);
         if (StringUtils.isBlank(casperRuntime)) {
             throw new MojoFailureException("CasperJS executable not found");
         }
 
-        retrieveVersion();
+        casperJsVersion = retrieveVersion(casperRuntime, verbose);
         if (verbose) {
             getLogger().info("CasperJS version: " + casperJsVersion);
         }
@@ -435,77 +429,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
                 cmdLine.addArgument(quote(argument), false);
             }
         }
-        return executeCommand(cmdLine);
-    }
-
-    private void findCasperRuntime() {
-        getLogger().debug("Finding casperjs runtime ...");
-
-        getLogger().debug("Trying from toolchain");
-        final Toolchain tc = toolchainManager.getToolchainFromBuildContext(DefaultCasperjsToolchain.KEY_CASPERJS_TYPE, session);
-        if (tc != null) {
-            getLogger().debug("Toolchain in casperjs-plugin: " + tc);
-            if (casperExecPath != null) {
-                getLogger().warn(
-                        "Toolchains are ignored, 'casperRuntime' parameter is set to " + casperExecPath);
-                casperRuntime = casperExecPath;
-            } else {
-                getLogger().debug("Found from toolchain");
-                casperRuntime = tc.findTool("casperjs");
-            }
-        }
-
-        if (casperRuntime == null) {
-            getLogger().debug("No toolchain found, falling back to parameter");
-            casperRuntime = casperExecPath;
-        }
-
-        if (casperRuntime == null) {
-            String defaultCasperRuntime = "casperjs";
-            if (isWindows()) {
-                defaultCasperRuntime = "casperjs.bat";
-            }
-            getLogger().debug("No parameter specified, falling back to default '" + defaultCasperRuntime + "'");
-            casperRuntime = defaultCasperRuntime;
-        }
-    }
-
-    private void retrieveVersion() throws MojoFailureException {
-        getLogger().debug("Check CasperJS version");
-        InputStream stream = null;
-        try {
-            Process child = Runtime.getRuntime().exec(casperRuntime + " --version");
-            stream = child.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            String version = reader.readLine();
-            casperJsVersion = new DefaultArtifactVersion(version);
-        } catch (final IOException e) {
-            if (verbose) {
-                getLogger().error("Could not run CasperJS command", e);
-            }
-            throw new MojoFailureException("Unable to determine casperJS version");
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (final IOException e) {
-                }
-            }
-        }
-    }
-
-    private int executeCommand(CommandLine line) {
-        getLogger().debug("Execute CasperJS command [" + line + "], with env: " + environmentVariables);
-        try {
-            DefaultExecutor executor = new DefaultExecutor();
-            executor.setExitValues(new int[] {0,1});
-            return executor.execute(line, environmentVariables);
-        } catch (final IOException e) {
-            if (verbose) {
-                getLogger().error("Could not run CasperJS command", e);
-            }
-            return -1;
-        }
+        return executeCommand(cmdLine, environmentVariables, verbose);
     }
 
 }

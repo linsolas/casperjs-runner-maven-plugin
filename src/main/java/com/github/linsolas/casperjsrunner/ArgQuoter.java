@@ -14,8 +14,12 @@ public class ArgQuoter {
         return "\"" + s + "\"";
     }
 
-    private static boolean needQuoting(String s) {
-        int len = s.length();
+    private static boolean needQuoting(final String s) {
+        if (s == null) {
+            return false;
+        }
+
+        final int len = s.length();
 
         if (len == 0) {
             // empty string have to be quoted
@@ -24,7 +28,10 @@ public class ArgQuoter {
 
         for (int i = 0; i < len; i++) {
             switch (s.charAt(i)) {
-                case ' ': case '\t': case '\\': case '"':
+                case ' ':
+                case '\t':
+                case '\\':
+                case '"':
                     return true;
             }
         }

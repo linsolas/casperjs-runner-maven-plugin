@@ -25,8 +25,8 @@ under the License.
     <language>en-us</language>
     <copyright>&#169;2014</copyright>
     <item>
-      <title>File: 14,
-             Errors: 257,
+      <title>File: 17,
+             Errors: 258,
              Warnings: 0,
              Infos: 0
       </title>
@@ -69,7 +69,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  2
+                  4
                 </td>
               </tr>
                           <tr>
@@ -116,6 +116,20 @@ under the License.
               </tr>
                           <tr>
                 <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.CasperJsVersionRetriever.java">com/github/linsolas/casperjsrunner/CasperJsVersionRetriever.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
+                </td>
+              </tr>
+                          <tr>
+                <td>
                   <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain.java">com/github/linsolas/casperjsrunner/toolchain/DefaultCasperjsToolchain.java</a>
                 </td>
                 <td>
@@ -125,7 +139,21 @@ under the License.
                   0
                 </td>
                 <td>
-                  19
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.CasperJsRuntimeFinder.java">com/github/linsolas/casperjsrunner/CasperJsRuntimeFinder.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  8
                 </td>
               </tr>
                           <tr>
@@ -139,7 +167,21 @@ under the License.
                   0
                 </td>
                 <td>
-                  93
+                  85
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://linsolas.github.io/casperjs-runner-maven-plugin/checkstyle.html#com.github.linsolas.casperjsrunner.CommandExecutor.java">com/github/linsolas/casperjsrunner/CommandExecutor.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  7
                 </td>
               </tr>
                           <tr>
@@ -167,7 +209,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  7
+                  6
                 </td>
               </tr>
                           <tr>
@@ -181,7 +223,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  3
+                  2
                 </td>
               </tr>
                           <tr>
@@ -223,7 +265,7 @@ under the License.
                   0
                 </td>
                 <td>
-                  25
+                  20
                 </td>
               </tr>
                           <tr>

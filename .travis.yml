@@ -1,9 +1,5 @@
 language: java
 
-#env:
-#  global:
-#    - secure: $(travis encrypt GITHUB_OAUTH=<your personnal token>)
-
 matrix:
   include:
     - jdk: "openjdk6"

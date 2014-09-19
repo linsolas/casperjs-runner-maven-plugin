@@ -62,11 +62,28 @@
           </execution>
         </executions>
         <configuration>
-          <casperExecPath>${casperjs-default-path}/casperjs</casperExecPath>
+          <casperExecPath>${custom-path}</casperExecPath>
         </configuration>
       </plugin>
     </plugins>
 
   </build>
+
+  <profiles>
+    <profile>
+      <id>windows</id>
+      <activation><os><family>windows</family></os></activation>
+      <properties>
+        <custom-path>${casperjs-default-path}/casperjs.bat</custom-path>
+      </properties>
+    </profile>
+    <profile>
+      <id>others</id>
+      <activation><os><family>!windows</family></os></activation>
+      <properties>
+        <custom-path>${casperjs-default-path}/casperjs</custom-path>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

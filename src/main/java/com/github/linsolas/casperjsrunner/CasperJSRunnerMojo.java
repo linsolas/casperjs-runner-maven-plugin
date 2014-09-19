@@ -1,11 +1,14 @@
 package com.github.linsolas.casperjsrunner;
 
+import static com.github.linsolas.casperjsrunner.ArgQuoter.quote;
+import static com.github.linsolas.casperjsrunner.CasperJsRuntimeFinder.findCasperRuntime;
+import static com.github.linsolas.casperjsrunner.CasperJsVersionRetriever.retrieveVersion;
+import static com.github.linsolas.casperjsrunner.CommandExecutor.executeCommand;
 import static com.github.linsolas.casperjsrunner.LogUtils.getLogger;
+import static com.github.linsolas.casperjsrunner.PathToNameBuilder.buildName;
 import static com.github.linsolas.casperjsrunner.PatternsChecker.checkPatterns;
-import static com.google.common.collect.Sets.newTreeSet;
 
 import org.apache.commons.exec.CommandLine;
-import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
@@ -16,20 +19,13 @@ import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
-import org.apache.maven.toolchain.Toolchain;
 import org.apache.maven.toolchain.ToolchainManager;
 
-import com.github.linsolas.casperjsrunner.toolchain.DefaultCasperjsToolchain;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 
 /**
  * Runs JavaScript and/or CoffeScript test files on CasperJS instance
@@ -46,7 +42,8 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * <br/><b>Default value:</b>
      * Found from <a href="http://maven.apache.org/guides/mini/guide-using-toolchains.html">toolchain</a> named <b><i>casperjs</b></i>,
      * then from this parameter,
-     * then from PATH with default value of <b>casperjs</b>
+     * then from PATH with default value of <b>casperjs</b> on Linux/Mac or <b>casperjs.bat</b> on Windows
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.executable")
     private String casperExecPath;
@@ -56,6 +53,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * <br/>If <code>${tests.directory}/includes</code> and <code>${tests.directory}/scripts</code> directories exist,
      * this is changed to <code>${tests.directory}/scripts</code> and all <code>*.js</code> files in <code>${tests.directory}/includes</code>
      * will automatically be added to the CasperJS <code>--includes</code> list.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.tests.directory", defaultValue = "${basedir}/src/test/casperjs")
     private File testsDir;
@@ -64,6 +62,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * Specify this parameter to run individual tests by file name, overriding the <code>testIncludes</code>/<code>testExcludes</code> parameters.
      * Each pattern you specify here will be used to create an include pattern formatted like <code>**&#47;${test}.{js,coffee}</code>, so you can
      * just type "-Dtest=MyTest" to run a single test called <code>foo/MyTest.js</code> or <code>foo/MyTest.coffee</code>.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.test")
     private String test;
@@ -82,49 +81,56 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 &nbsp;&nbsp;&lt;testsInclude&gt;**&#47;*Test.coffee&lt;/testsInclude&gt;<br/>
 &nbsp;&nbsp;&lt;testsInclude&gt;**&#47;*TestCase.coffee&lt;/testsInclude&gt;<br/>
 &lt;/testsIncludes&gt;</code>
+     * @since 1.0.1
      */
     @Parameter
     private List<String> testsIncludes;
 
     /**
      * A list of <code>&lt;testsExclude&gt;</code> elements specifying the tests (by pattern) that should be excluded in testing.
+     * @since 1.0.1
      */
     @Parameter
     private List<String> testsExcludes;
 
     /**
      * Do we ignore the tests failures. If yes, the plugin will not fail at the end if there was tests failures.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.ignoreTestFailures", defaultValue = "${maven.test.failure.ignore}")
     private boolean ignoreTestFailures = false;
 
     /**
-     * Set the plugin to be verbose during its execution. It will ALSO impact the verbosity of the CasperJS execution (ie, setting
-     * the --verbose command line option).
+     * Set the plugin to be verbose during its execution.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.verbose", defaultValue = "${maven.verbose}")
     private boolean verbose = false;
 
     /**
      * A flag to indicate if the *.js found in <code>tests.directory</code> should be executed.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.include.javascript", defaultValue="true")
     private boolean includeJS;
 
     /**
      * A flag to indicate if the *.coffee found in <code>tests.directory</code> should be executed.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.include.coffeescript", defaultValue="true")
     private boolean includeCS;
 
     /**
      * Environment variables to set on the command line, instead of the default, inherited, ones.
+     * @since 1.0.0
      */
     @Parameter
     private Map<String, String> environmentVariables;
 
     /**
      * Set this to <code>true</code> to bypass unit tests entirely.
+     * @since 1.0.1
      */
     @Parameter(property = "casperjs.skip", defaultValue="${maven.test.skip}")
     private boolean skip = false;
@@ -135,6 +141,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * Set the value for the CasperJS option <code>--pre=[pre-test.js]</code>: will add the tests contained in pre-test.js
      * before executing the test suite. If a <code>pre.js</code> file is found on the <code>${tests.directory}</code>, this
      * option will be set automatically
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.pre")
     private String pre;
@@ -143,6 +150,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * Set the value for the CasperJS option <code>--post=[post-test.js]</code>: will add the tests contained in post-test.js
      * after having executed the whole test suite. If a <code>post.js</code> file is found on the <code>${tests.directory}</code>,
      * this option will be set automatically
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.post")
     private String post;
@@ -150,6 +158,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * Set the value for the CasperJS option <code>--includes=[foo.js,bar.js]</code>: will includes the foo.js and bar.js files
      * before each test file execution.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.includes")
     private String includes;
@@ -161,6 +170,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
 <code>&lt;includesPatterns&gt;<br/>
 &nbsp;&nbsp;&lt;includesPattern&gt;${tests.directory}/includes/**&#47;*.js&lt;/includesPattern&gt;<br/>
 &lt;/includesPatterns&gt;</code>
+     * @since 1.0.1
      */
     @Parameter
     private List<String> includesPatterns;
@@ -169,30 +179,44 @@ public class CasperJSRunnerMojo extends AbstractMojo {
      * Should CasperJS generates XML reports, through the <code>--xunit=[filename]</code> option.
      * If <code>true</code>, such reports will be generated in the <code>reportsDirectory<code> directory,
      * with a name of <code>TEST-&lt;test filename&gt;.xml</code>.
+     * @since 1.0.2
      */
     @Parameter(property = "casperjs.enableXmlReports", defaultValue = "false")
     private boolean enableXmlReports;
 
     /**
      * Directory where the xUnit reports will be stored.
+     * @since 1.0.2
      */
     @Parameter(property = "casperjs.reports.directory", defaultValue = "${project.build.directory}/casperjs-reports")
     private File reportsDir;
 
     /**
      * Set the value for the CasperJS option <code>--log-level=[logLevel]</code>: sets the logging level (see http://casperjs.org/logging.html).
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.logLevel")
     private String logLevel;
 
     /**
-     * Set the value for the CasperJS option --direct: will output log messages directly to the console.
+     * Set the CasperJS --direct option: will output log messages directly to the console.
+     * Deprecated: use the <code>casperjsVerbose</code> option
+     * @since 1.0.0
      */
+    @Deprecated
     @Parameter(property = "casperjs.direct", defaultValue = "false")
     private boolean direct;
 
     /**
-     * Set the value for the CasperJS option --fail-fast: will terminate the current test suite as soon as a first failure is encountered.
+     * For CasperJS 1.1.x, set --verbose option, --direct for CasperJS 1.0.x: will output log messages directly to the console
+     * @since 1.0.2
+     */
+    @Parameter(property = "casperjs.casperjsVerbose", defaultValue = "false")
+    private boolean casperjsVerbose;
+
+    /**
+     * Set the CasperJS --fail-fast option: will terminate the current test suite as soon as a first failure is encountered.
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.failFast", defaultValue = "false")
     private boolean failFast;
@@ -200,12 +224,14 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     /**
      * CasperJS 1.1 and above<br/>Set the for the CasperJS option <code>--engine=[engine]</code>: will change the rendering engine
      * (phantomjs or slimerjs)
+     * @since 1.0.0
      */
     @Parameter(property = "casperjs.engine")
     private String engine;
 
     /**
      * A list of <code>&lt;argument&gt;</code> to add to the casperjs command line.
+     * @since 1.0.0
      */
     @Parameter
     private List<String> arguments;
@@ -258,7 +284,7 @@ public class CasperJSRunnerMojo extends AbstractMojo {
             return;
         }
         init();
-        TreeSet<String> scripts = findScripts();
+        Collection<String> scripts = findScripts();
         Result globalResult = executeScripts(scripts);
         getLogger().info(globalResult.print());
         if (!ignoreTestFailures && globalResult.getFailures() > 0) {
@@ -267,14 +293,19 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     }
 
     private void init() throws MojoFailureException {
-        findCasperRuntime();
+        casperRuntime = findCasperRuntime(toolchainManager,session,casperExecPath);
         if (StringUtils.isBlank(casperRuntime)) {
             throw new MojoFailureException("CasperJS executable not found");
         }
 
-        retrieveVersion();
+        casperJsVersion = retrieveVersion(casperRuntime, verbose);
         if (verbose) {
             getLogger().info("CasperJS version: " + casperJsVersion);
+        }
+
+        if (direct && (casperJsVersion.getMajorVersion() > 1 || casperJsVersion.getMajorVersion() == 1 && casperJsVersion.getMinorVersion() > 0)) {
+            getLogger().warn("direct option is deprecated, use casperjsVerbose instead");
+            casperjsVerbose = true;
         }
 
         testsIncludes = checkPatterns(testsIncludes, includeJS, includeCS);
@@ -307,11 +338,11 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
     }
 
-    private TreeSet<String> findScripts() {
-        return newTreeSet(new ScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes).findScripts());
+    private Collection<String> findScripts() {
+        return new OrdererScriptsFinderDecorator(new DefaultScriptsFinder(scriptsDir, test, testsIncludes, testsExcludes)).findScripts();
     }
 
-    private Result executeScripts(final TreeSet<String> files) {
+    private Result executeScripts(final Collection<String> files) {
         Result result = new Result();
         for (String file : files) {
             File f = new File(scriptsDir, file);
@@ -330,14 +361,26 @@ public class CasperJSRunnerMojo extends AbstractMojo {
     private int executeScript(File f) {
         CommandLine cmdLine = new CommandLine(casperRuntime);
 
-        // Option --verbose
-        if (verbose) {
-            cmdLine.addArgument("--verbose");
+        // First, native options
+
+        // Option --verbose / --direct, to output log messages to the console
+        if (casperjsVerbose) {
+            if (casperJsVersion.getMajorVersion() < 1 || casperJsVersion.getMajorVersion() == 1 && casperJsVersion.getMinorVersion() == 0) {
+                cmdLine.addArgument("--direct");
+            } else {
+                cmdLine.addArgument("--verbose");
+            }
         }
         // Option --log-level, to set the log level
         if (StringUtils.isNotBlank(logLevel)) {
             cmdLine.addArgument("--log-level=" + logLevel);
         }
+        // Option --engine, to select phantomJS or slimerJS engine
+        if (StringUtils.isNotBlank(engine)) {
+            cmdLine.addArgument("--engine=" + engine);
+        }
+
+        // Then, specific ones for unit testing
 
         cmdLine.addArgument("test");
 
@@ -373,94 +416,20 @@ public class CasperJSRunnerMojo extends AbstractMojo {
         }
         // Option --xunit, to export results in XML file
         if (enableXmlReports) {
-            cmdLine.addArgument("--xunit=" + new File(reportsDir, "TEST-"+f.getName().replaceAll("\\.", "_") + ".xml"));
+            cmdLine.addArgument("--xunit=" + new File(reportsDir, "TEST-" + buildName(scriptsDir, f) + ".xml"));
         }
         // Option --fast-fast, to terminate the test suite once a failure is
         // found
         if (failFast) {
             cmdLine.addArgument("--fail-fast");
         }
-        // Option --direct, to output log messages to the console
-        if (direct) {
-            cmdLine.addArgument("--direct");
-        }
-        // Option --engine, to select phantomJS or slimerJS engine
-        if (StringUtils.isNotBlank(engine)) {
-            cmdLine.addArgument("--engine=" + engine);
-        }
         cmdLine.addArgument(f.getAbsolutePath());
         if (arguments != null && !arguments.isEmpty()) {
             for (String argument : arguments) {
-                cmdLine.addArgument(argument, false);
+                cmdLine.addArgument(quote(argument), false);
             }
         }
-        return executeCommand(cmdLine);
-    }
-
-    private void findCasperRuntime() {
-        getLogger().debug("Finding casperjs runtime ...");
-
-        getLogger().debug("Trying from toolchain");
-        final Toolchain tc = toolchainManager.getToolchainFromBuildContext(DefaultCasperjsToolchain.KEY_CASPERJS_TYPE, session);
-        if (tc != null) {
-            getLogger().debug("Toolchain in casperjs-plugin: " + tc);
-            if (casperExecPath != null) {
-                getLogger().warn(
-                        "Toolchains are ignored, 'casperRuntime' parameter is set to " + casperExecPath);
-                casperRuntime = casperExecPath;
-            } else {
-                getLogger().debug("Found from toolchain");
-                casperRuntime = tc.findTool("casperjs");
-            }
-        }
-
-        if (casperRuntime == null) {
-            getLogger().debug("No toolchain found, falling back to parameter");
-            casperRuntime = casperExecPath;
-        }
-
-        if (casperRuntime == null) {
-            getLogger().debug("No parameter specified, falling back to default 'casperjs'");
-            casperRuntime = "casperjs";
-        }
-    }
-
-    private void retrieveVersion() throws MojoFailureException {
-        getLogger().debug("Check CasperJS version");
-        InputStream stream = null;
-        try {
-            Process child = Runtime.getRuntime().exec(casperRuntime + " --version");
-            stream = child.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
-            String version = reader.readLine();
-            casperJsVersion = new DefaultArtifactVersion(version);
-        } catch (final IOException e) {
-            if (verbose) {
-                getLogger().error("Could not run CasperJS command", e);
-            }
-            throw new MojoFailureException("Unable to determine casperJS version");
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (final IOException e) {
-                }
-            }
-        }
-    }
-
-    private int executeCommand(CommandLine line) {
-        getLogger().debug("Execute CasperJS command [" + line + "], with env: " + environmentVariables);
-        try {
-            DefaultExecutor executor = new DefaultExecutor();
-            executor.setExitValues(new int[] {0,1});
-            return executor.execute(line, environmentVariables);
-        } catch (final IOException e) {
-            if (verbose) {
-                getLogger().error("Could not run CasperJS command", e);
-            }
-            return -1;
-        }
+        return executeCommand(cmdLine, environmentVariables, verbose);
     }
 
 }

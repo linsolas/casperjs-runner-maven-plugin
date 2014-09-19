@@ -1,5 +1,8 @@
 package com.github.linsolas.casperjsrunner.toolchain;
 
+import static com.github.linsolas.casperjsrunner.toolchain.CasperjsToolchain.KEY_CASPERJS_EXECUTABLE;
+import static com.github.linsolas.casperjsrunner.toolchain.CasperjsToolchain.KEY_CASPERJS_TYPE;
+
 import org.apache.maven.toolchain.MisconfiguredToolchainException;
 import org.apache.maven.toolchain.RequirementMatcherFactory;
 import org.apache.maven.toolchain.ToolchainFactory;
@@ -16,56 +19,53 @@ import java.io.File;
 /**
  * Based on {@code org.apache.maven.toolchain.java.DefaultJavaToolchainFactory}.
  */
-@Component(
-        role = ToolchainFactory.class,
-        hint = DefaultCasperjsToolchain.KEY_CASPERJS_TYPE,
-        description = "A default factory for '"+DefaultCasperjsToolchain.KEY_CASPERJS_TYPE+"' toolchains")
+@Component(role = ToolchainFactory.class, hint = KEY_CASPERJS_TYPE, description = "A default factory for '"
+        + KEY_CASPERJS_TYPE + "' toolchains")
 public class DefaultCasperjsToolchainFactory implements ToolchainFactory, LogEnabled {
 
     private Logger logger;
 
-    public ToolchainPrivate createToolchain(ToolchainModel model) throws MisconfiguredToolchainException {
+    @Override
+    public ToolchainPrivate createToolchain(final ToolchainModel model)
+            throws MisconfiguredToolchainException {
         if (model == null) {
             return null;
         }
-        DefaultCasperjsToolchain toolchain = new DefaultCasperjsToolchain(model, logger);
+        final DefaultCasperjsToolchain toolchain = new DefaultCasperjsToolchain(model, logger);
         Xpp3Dom dom = (Xpp3Dom) model.getConfiguration();
-        Xpp3Dom casperjsExecutable = dom.getChild(DefaultCasperjsToolchain.KEY_CASPERJS_EXECUTABLE);
+        final Xpp3Dom casperjsExecutable = dom.getChild(KEY_CASPERJS_EXECUTABLE);
         if (casperjsExecutable == null) {
-            throw new MisconfiguredToolchainException(
-                    "CasperJS toolchain without the "
-                            + DefaultCasperjsToolchain.KEY_CASPERJS_EXECUTABLE
-                            + " configuration element.");
+            throw new MisconfiguredToolchainException("CasperJS toolchain without the "
+                    + KEY_CASPERJS_EXECUTABLE + " configuration element.");
         }
-        File normal = new File(FileUtils.normalize(casperjsExecutable.getValue()));
+        final File normal = new File(FileUtils.normalize(casperjsExecutable.getValue()));
         if (normal.exists()) {
             toolchain.setCasperjsExecutable(FileUtils.normalize(casperjsExecutable.getValue()));
         } else {
-            throw new MisconfiguredToolchainException(
-                    "Non-existing casperjs executable at " + normal.getAbsolutePath());
+            throw new MisconfiguredToolchainException("Non-existing casperjs executable at "
+                    + normal.getAbsolutePath());
         }
 
-        //now populate the provides section.
+        // now populate the provides section.
         dom = (Xpp3Dom) model.getProvides();
-        Xpp3Dom[] provides = dom.getChildren();
+        final Xpp3Dom[] provides = dom.getChildren();
         for (final Xpp3Dom provide : provides) {
-            String key = provide.getName();
-            String value = provide.getValue();
+            final String key = provide.getName();
+            final String value = provide.getValue();
             if (value == null) {
-                throw new MisconfiguredToolchainException(
-                        "Provides token '" + key + "' doesn't have any value configured.");
+                throw new MisconfiguredToolchainException("Provides token '" + key
+                        + "' doesn't have any value configured.");
             }
             if ("version".equals(key)) {
-                toolchain.addProvideToken(key,
-                        RequirementMatcherFactory.createVersionMatcher(value));
+                toolchain.addProvideToken(key, RequirementMatcherFactory.createVersionMatcher(value));
             } else {
-                toolchain.addProvideToken(key,
-                        RequirementMatcherFactory.createExactMatcher(value));
+                toolchain.addProvideToken(key, RequirementMatcherFactory.createExactMatcher(value));
             }
         }
         return toolchain;
     }
 
+    @Override
     public ToolchainPrivate createDefaultToolchain() {
         return null;
     }
@@ -74,7 +74,8 @@ public class DefaultCasperjsToolchainFactory implements ToolchainFactory, LogEna
         return logger;
     }
 
-    public void enableLogging(Logger l) {
+    @Override
+    public void enableLogging(final Logger l) {
         this.logger = l;
     }
 }

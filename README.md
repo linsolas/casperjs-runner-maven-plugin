@@ -40,6 +40,8 @@ Here is a list of things that should be done to make this plugin awesome:
 - ~~Manage sub-directories where files are included~~
 - ~~Manage a list of excludes / includes for the tests to run~~
 - ~~Publish to Maven Central~~
+- ~~Maven site~~
+- ~~Continuous Integration via [Travis CI](https://travis-ci.org/)~~
 
 ## Issues / Enhancements
 

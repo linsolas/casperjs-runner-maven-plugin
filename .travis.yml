@@ -84,5 +84,5 @@ script:
   - phantomjs --version
   - casperjs --version
   - mvn -Pit install -Dinvoker.streamLogs=true
-  - if [ "${BUILD_SITE}" = "true" ]; then mvn -Psite site ; fi
+  - if [ "${BUILD_SITE}" = "true" ]; then mvn -Psite site-deploy ; fi
 

@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>xmlReports-specific-dir</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: XML reports with specific directory</name>
 

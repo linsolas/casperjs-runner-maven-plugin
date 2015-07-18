@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>casperjs-1.0</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: CasperJS 1.0</name>
 

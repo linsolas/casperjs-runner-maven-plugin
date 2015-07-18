@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>default-values-full-structure</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: default values with full structure</name>
 

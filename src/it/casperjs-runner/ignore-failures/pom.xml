@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>ignore-failures</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: ignore-failures</name>
 

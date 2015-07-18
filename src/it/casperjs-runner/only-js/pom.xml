@@ -9,6 +9,7 @@
   <groupId>com.github.linsolas</groupId>
   <artifactId>only-js</artifactId>
   <version>1.0</version>
+  <packaging>pom</packaging>
 
   <name>CasperJS Runner :: only javascripts</name>
 

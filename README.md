@@ -1,4 +1,6 @@
-This repository seems dead. Active one is from the CasperJS organization : https://github.com/casperjs/casperjs-runner-maven-plugin
+:warning: This repository is deprecated.
+Use the one from the CasperJS organization: https://github.com/casperjs/casperjs-runner-maven-plugin
+
 ============================
 
 casperjs-runner-maven-plugin
